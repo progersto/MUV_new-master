@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+android:id="@+id/contentMain"
+
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/mapFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@+id/carLayout"></LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardElevation="4dp"
+        android:id="@+id/price_wrapper"
+        card_view:contentPadding="12dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <AutoCompleteTextView
+                android:layout_centerVertical="true"
+                android:maxLines="1"
+                android:id="@+id/autocomplete_places"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/imgLocation"
+                android:layout_toStartOf="@+id/imgLocation"
+                android:background="@color/white"
+                android:hint="@string/pick_up_location"
+                android:textColor="@color/grey3"
+                android:ellipsize="end"
+                android:inputType="text"
+                android:textSize="14sp"
+                />
+
+            <ImageView
+                android:layout_centerVertical="true"
+                android:id="@+id/imgLocation"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_navigator"/>
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imgLocation2"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_location"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+    <LinearLayout
+
+        android:id="@+id/carLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/subCarLayout"
+        android:animateLayoutChanges="true"
+        android:background="@color/navy_blue_fn"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:src="@drawable/prev"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:background="@color/navy_blue_fn"
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"/>
+
+        <ImageView
+            android:id="@+id/imgNext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/next"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/subCarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="true"
+        android:background="@color/navy_blue_fn"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/imgSubPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:src="@drawable/prev"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:background="@color/navy_blue_fn"
+            android:id="@+id/rvSubType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"/>
+
+        <ImageView
+            android:id="@+id/imgSubNext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/next"/>
+    </LinearLayout>
+</RelativeLayout>

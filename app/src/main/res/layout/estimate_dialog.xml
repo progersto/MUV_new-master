@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="25dp"
+    android:background="@drawable/square_yellow_border"
+    android:layout_gravity="center"
+    android:layout_centerInParent="true"
+    >
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/fare_title"
+        android:textSize="25sp"
+        android:textColor="@color/yellow_light"
+        android:text="Fare Estimate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/fare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fare_title"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="1dp"
+        android:ellipsize="start"
+        android:gravity="center_horizontal"
+        android:hint="RIDE21"
+        android:inputType="textEmailAddress"
+        android:paddingBottom="2dp"
+        android:text="N 2300.00"
+        android:textColor="@color/yellow_light"
+        android:textColorHint="@color/white"
+        android:textCursorDrawable="@null"
+        android:textSize="60sp"
+
+        />
+
+    <!--<View-->
+        <!--android:id="@+id/bar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_below="@+id/email_field"-->
+        <!--android:background="@color/yellow_light"-->
+
+        <!--/>-->
+
+    <LinearLayout
+
+        android:layout_below="@+id/fare"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:id="@+id/social_wrapper"
+
+        android:weightSum="2"
+        >
+
+        <TextView
+
+            android:gravity="center"
+            android:id="@+id/min_fare"
+            android:textSize="18sp"
+            android:textColor="@color/yellow_light"
+            android:text="Min Fare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_marginTop="20dp"
+            android:id="@+id/car_img_fare"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/sedan_car" />
+        <TextView
+            android:gravity="center"
+            android:id="@+id/car_name"
+            android:textSize="18sp"
+            android:textColor="@color/yellow_light"
+            android:text="Prestige"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+
+                android:id="@+id/green_dot"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/green_dot"
+                />
+
+            <TextView
+                android:id="@+id/src_addr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/green_dot"
+                android:text="Lorem Ipsum"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+    >
+
+    <ImageView
+
+        android:id="@+id/red_dot"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/red_dot"
+        />
+    <TextView
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:id="@+id/destination_addr"
+        android:text="Lorem Ipsum"
+        android:layout_toRightOf="@id/red_dot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp" />
+</RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/square_red_border"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/cancel_fare"
+
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp">
+            <TextView
+                android:textAllCaps="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CANCEL"
+                android:textColor="@color/red_fn"
+                android:layout_centerInParent="true"
+                android:textSize="25dp"
+                />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

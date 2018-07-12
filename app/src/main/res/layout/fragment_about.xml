@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@color/navy_blue_fn"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:background="@color/dull_golden"
+        android:id="@+id/toolbar_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/back_btn"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_btn_yellow"
+            android:tint="@color/white"
+
+            />
+        <TextView
+            android:layout_centerVertical="true"
+            android:text="About Us"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+
+        android:layout_below="@+id/toolbar_wrapper"
+        >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/info_tab"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/bottom_border_yellow"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:orientation="horizontal">
+            <ImageView
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_info"
+                android:layout_margin="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_gravity="center_vertical"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Information"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="10dp"
+            android:id="@+id/policy_tab"
+            android:background="@drawable/bottom_border_yellow"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:orientation="horizontal">
+            <ImageView
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_policy"
+                android:layout_margin="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Privacy Policy"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="10dp"
+            android:id="@+id/terms_tab"
+            android:background="@drawable/bottom_border_yellow"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:orientation="horizontal">
+            <ImageView
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_terms"
+                android:layout_margin="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_gravity="center_vertical"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/terms_conditoins"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="10dp"
+            android:id="@+id/contact_us_tab"
+            android:background="@drawable/bottom_border_yellow"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:orientation="horizontal">
+            <ImageView
+                android:clickable="false"
+                android:focusable="false"
+
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_contact_us"
+                android:layout_margin="10dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_gravity="center_vertical"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Contact Us"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

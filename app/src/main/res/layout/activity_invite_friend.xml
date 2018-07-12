@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_user_edit_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/navy_blue_fn"
+    android:orientation="vertical"
+    tools:context="com.muvit.passenger.Activities.UserEditProfileActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/toolBar"
+        android:background="@color/dull_golden"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/back_btn"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_btn_yellow"
+            android:tint="@color/white"
+
+            />
+        <TextView
+            android:layout_centerVertical="true"
+            android:text="Invite Friends"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:layout_toRightOf="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_below="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_above="@+id/invite_btn"
+        >
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_marginTop="40dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_invite_detail"
+                android:layout_width="130dp"
+                android:layout_height="180dp" />
+            <TextView
+                android:text="SHARE YOUR INVITE CODE"
+                android:textSize="22sp"
+                android:textStyle="bold"
+android:textColor="@color/white"
+                android:id="@+id/one"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="RP21B652"
+                android:textColor="@color/yellow_light"
+                android:textSize="40sp"
+                android:id="@+id/two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:textAllCaps="true"
+                android:text="Invite Your Frinds and Get"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:id="@+id/three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textAllCaps="true"
+                android:text="N500 Off"
+                android:textColor="@color/yellow_light"
+                android:textSize="18sp"
+                android:id="@+id/four"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textAllCaps="true"
+                android:text="Your next Ride"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:id="@+id/five"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:textAllCaps="true"
+        android:id="@+id/invite_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow_light"
+        android:text="INVITE"
+        android:textSize="16sp" />
+
+</RelativeLayout>

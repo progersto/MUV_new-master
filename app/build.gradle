@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+    defaultConfig {
+        applicationId "com.muvit.passenger"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 7
+        versionName "1.4"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            storeFile file("/home/nct58/Hardik/PROJECTS/MUV Enterprise/Release Details/MUVITUser.jks")
+            storePassword "12345678"
+            keyAlias "User"
+            keyPassword "12345678"
+        }
+    }
+    buildTypes {
+        debug {
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            signingConfig signingConfigs.release
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support:design:27.0.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.google.android.gms:play-services-maps:10.0.1'
+    implementation 'com.google.android.gms:play-services-places:10.0.1'
+    implementation 'com.google.android.gms:play-services-auth:10.0.1'
+    implementation 'com.google.firebase:firebase-messaging:10.0.1'
+    implementation 'com.isseiaoki:simplecropview:1.0.10'
+    implementation 'com.facebook.android:facebook-android-sdk:4.16.1'
+    implementation 'com.koushikdutta.ion:ion:2.+'
+    implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.android.support:support-v4:27.0.0'
+    implementation 'com.google.firebase:firebase-core:10.0.1'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+    implementation 'com.google.firebase:firebase-core:10.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+}
+
+apply plugin: 'com.google.gms.google-services'
