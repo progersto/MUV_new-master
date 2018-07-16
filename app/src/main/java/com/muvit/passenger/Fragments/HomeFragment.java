@@ -21,8 +21,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,11 +47,9 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.MapFragment;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.koushikdutta.ion.Ion;
 import com.muvit.passenger.Activities.HomeActivity;
-import com.muvit.passenger.Activities.Step2Activity;
 import com.muvit.passenger.Adapters.HomeAdapter;
 import com.muvit.passenger.Adapters.SubCarTypeAdapter;
 import com.muvit.passenger.Application.ApplicationController;
@@ -81,7 +77,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -103,11 +98,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.google.android.gms.location.places.Place.TYPE_COUNTRY;
 
 /**
  * Created by nct119 on 28/10/16.
@@ -119,8 +111,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     //    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
 //            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
     protected GoogleApiClient mGoogleApiClient;
-    Dialog promoDialog, fareDialog;
-    RelativeLayout cancelBtn, okBtn, cancelFare;
+    Dialog promoDialog, fareDialog, paymentMethodDialog;
+    RelativeLayout cancelBtn, okBtn, cancelFare, btnCash, btnWallet, btnCard;
     TextView fareView, startLocation, endLocation, car_name;
 
     LatLng fromLat;
@@ -135,7 +127,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private Toolbar toolbar;
     private TextView txtTitle, txtSource;
     private ImageView imgWallet, dashLine, imgLocation, close_anim;
-    LinearLayout imgCash, txtFareEstimate;
+    LinearLayout imgCash_btn, txtFareEstimate;
     RelativeLayout promo_btn;
     private Button btnBooknRide;
     private PopupWindow popupWindow;
@@ -147,7 +139,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView mAutoCompleteView;
     private Marker pickupMarker;
-        private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
@@ -168,7 +160,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             places.release();
         }
     };
-//    private AdapterView.OnItemClickListener
+    //    private AdapterView.OnItemClickListener
 //            mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
 //        @Override
 //        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -211,7 +203,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     private TimerTask mTt1;
     private Handler mTimerHandler = new Handler();
-//    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+    //    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
 //        @Override
 //        public void onResult(PlaceBuffer places) {
 //            if (!places.getStatus().isSuccess()) {
@@ -435,10 +427,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private void initViewsNew(View rootView) {
         setupToolbar(rootView);
         imgWallet = rootView.findViewById(R.id.imgWallet);
-        imgCash = rootView.findViewById(R.id.card_btn);
+        imgCash_btn = rootView.findViewById(R.id.card_btn);
         btnBooknRide = rootView.findViewById(R.id.btnBooknRide);
         promo_btn = (RelativeLayout) rootView.findViewById(R.id.promo_btn);
         initPromoDialog();
+        initPaymentMethodDialog();
         initEstimate();
         promo_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -447,6 +440,14 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 promoDialog.show();
             }
         });
+        imgCash_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // showPromoDialog();
+                paymentMethodDialog.show();
+            }
+        });
+
 
 
         txtFareEstimate = rootView.findViewById(R.id.txtFareEstimate);
@@ -629,17 +630,45 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 promoDialog.dismiss();
             }
         });
-
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 promoDialog.dismiss();
             }
         });
-
         promoDialog.setCancelable(false);
+    }//initPromoDialog
 
-    }
+
+    private void initPaymentMethodDialog() {
+        paymentMethodDialog = new Dialog(getContext());
+        paymentMethodDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        paymentMethodDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        paymentMethodDialog.setContentView(R.layout.payment_dialog);
+        btnCash = (RelativeLayout) paymentMethodDialog.findViewById(R.id.btnCash);
+        btnWallet = (RelativeLayout) paymentMethodDialog.findViewById(R.id.btnWallet);
+        btnCard = (RelativeLayout) paymentMethodDialog.findViewById(R.id.btnCard);
+        btnCash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paymentMethodDialog.dismiss();
+            }
+        });
+        btnWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paymentMethodDialog.dismiss();
+            }
+        });
+        btnCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paymentMethodDialog.dismiss();
+            }
+        });
+        paymentMethodDialog.setCancelable(false);
+    }//initPaymentMethodDialog
+
 
     private void initEstimate() {
         // final View view = getLayoutInflater().inflate(R.layout.promo_dialog, null);
@@ -650,22 +679,17 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         car_img_fare = (ImageView) fareDialog.findViewById(R.id.car_img_fare);
         cancelFare = (RelativeLayout) fareDialog.findViewById(R.id.cancel_fare);
         car_name = (TextView) fareDialog.findViewById(R.id.car_name);
-
         cancelFare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fareDialog.dismiss();
             }
         });
-
-
         fareView = fareDialog.findViewById(R.id.fare);
         startLocation = fareDialog.findViewById(R.id.src_addr);
         endLocation = fareDialog.findViewById(R.id.destination_addr);
-
         fareDialog.setCancelable(false);
-
-    }
+    }//initEstimate
 
     private void popupEstimateNew(FareEstimateItem fareSummaryItem) {
         startLocation.setText(fareSummaryItem.getPickUpLocation());
@@ -676,8 +700,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 .load(WebServiceUrl.carUrl + fareSummaryItem.getCarTypeImage());
         fareView.setText(fareSummaryItem.getFareDistanceCharges());
         fareDialog.show();
-
-    }
+    }//popupEstimateNew
 
     private void popupFareEstimate(FareEstimateItem fareSummaryItem) {
         View popUpView = getLayoutInflater().inflate(R.layout.popup_fare_estimate, null);
@@ -778,7 +801,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                     googleMap = googleMap1;
 
 
-
                     if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
@@ -800,7 +822,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
                         }
                     });
-
 
 
                     // googleMap.setMyLocationEnabled(true);
@@ -845,7 +866,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                     googleMap.moveCamera(CameraUpdateFactory.zoomTo(18));
 
 
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -860,27 +880,27 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //
 //            @Override
 //            public void run() {
-                try {
-                    selectedLatLng = point;
-                    Location temp = new Location(LocationManager.GPS_PROVIDER);
-                    temp.setLatitude(point.latitude);
-                    temp.setLongitude(point.longitude);
-                    GeocoderHelper gHelper = new GeocoderHelper();
-                    gHelper.fetchAddress(getActivity(), temp,
-                            mAutoCompleteView, mAutocompleteClickListener);
+        try {
+            selectedLatLng = point;
+            Location temp = new Location(LocationManager.GPS_PROVIDER);
+            temp.setLatitude(point.latitude);
+            temp.setLongitude(point.longitude);
+            GeocoderHelper gHelper = new GeocoderHelper();
+            gHelper.fetchAddress(getActivity(), temp,
+                    mAutoCompleteView, mAutocompleteClickListener);
 
-                    //remove previously placed Marker
-                    if (pickupMarker != null) {
-                        pickupMarker.remove();
-                    }
+            //remove previously placed Marker
+            if (pickupMarker != null) {
+                pickupMarker.remove();
+            }
 
-                    //place marker where user just clicked
-                    pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title("Drop Off")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
+            //place marker where user just clicked
+            pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title("Drop Off")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
 
-                    moveToCurrentLocation();
-                } catch (Exception e) {
-                    Log.d("ss", e.getMessage());
+            moveToCurrentLocation();
+        } catch (Exception e) {
+            Log.d("ss", e.getMessage());
 //                    if (getActivity() != null) {
 //                        getActivity().runOnUiThread(new Runnable() {
 //                            @Override
@@ -889,8 +909,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //                            }
 //                        });
 //                    }
-                    e.printStackTrace();
-                }
+            e.printStackTrace();
+        }
 //            }
 //
 //        };
@@ -1093,12 +1113,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                     defaultPaymentMethod = resultObj.getPaymentMethod().get(0).getDefaultPaymentMethod();
                     if (defaultPaymentMethod.equalsIgnoreCase("w")) {
                         imgWallet.setImageResource(R.drawable.wallet_profile);
-//                        imgCash.setImageResource(R.drawable.cash_gray);
+//                        imgCash_btn.setImageResource(R.drawable.cash_gray);
 //                        btnBooknRide.setBackgroundColor(getResources().getColor(R.color.yellowColor));
 //                        btnBooknRide.setTypeface(null, Typeface.BOLD);
                     } else {
                         imgWallet.setImageResource(R.drawable.wallet_gray);
-//                        imgCash.setImageResource(R.drawable.cash);
+//                        imgCash_btn.setImageResource(R.drawable.cash);
 //                        btnBooknRide.setBackgroundColor(getResources().getColor(R.color.yellowColor));
 //                        btnBooknRide.setTypeface(null, Typeface.BOLD);
                         defaultPaymentMethod = "c";
