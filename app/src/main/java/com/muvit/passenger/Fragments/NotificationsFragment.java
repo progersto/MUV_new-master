@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.muvit.passenger.Activities.HomeActivity;
+import com.muvit.passenger.Activities.Step2Activity;
 import com.muvit.passenger.Adapters.NotificationsAdapter;
 import com.muvit.passenger.AsyncTask.ParseJSON;
 import com.muvit.passenger.Models.MessageEvent;
@@ -129,10 +129,10 @@ public class NotificationsFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if(getActivity() instanceof HomeActivity){
-            ((HomeActivity)getActivity()).showToolbar();
-            ((HomeActivity)getActivity()).showToolbarTiltle("Notificatoins");
-            ((HomeActivity)getActivity()).turnActionBarIconWhite();
+        if(getActivity() instanceof Step2Activity){
+            ((Step2Activity)getActivity()).showToolbar();
+            ((Step2Activity)getActivity()).showToolbarTiltle("Notificatoins");
+            ((Step2Activity)getActivity()).turnActionBarIconWhite();
         }
         super.onResume();
     }

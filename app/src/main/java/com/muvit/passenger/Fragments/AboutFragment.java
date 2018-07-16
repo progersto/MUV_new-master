@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.muvit.passenger.Activities.ContactUs;
-import com.muvit.passenger.Activities.HomeActivity;
 import com.muvit.passenger.Activities.InformationActivity;
+import com.muvit.passenger.Activities.Step2Activity;
 import com.muvit.passenger.R;
 import com.muvit.passenger.WebServices.WebServiceUrl;
 
@@ -30,8 +30,8 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
-        ((HomeActivity)getActivity()).hideToolbar();
-        ((HomeActivity)getActivity()).hideToolbarTiltle();
+        ((Step2Activity)getActivity()).hideToolbar();
+        ((Step2Activity)getActivity()).hideToolbarTiltle();
         intiView(rootView);
 
 //        try {
@@ -92,8 +92,8 @@ public class AboutFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)getActivity()).hideToolbar();
-        ((HomeActivity)getActivity()).hideToolbarTiltle();
+        ((Step2Activity)getActivity()).hideToolbar();
+        ((Step2Activity)getActivity()).hideToolbarTiltle();
     }
 
 }

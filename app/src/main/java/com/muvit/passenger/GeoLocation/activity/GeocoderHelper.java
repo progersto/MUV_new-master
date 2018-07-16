@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -181,6 +182,161 @@ public class GeocoderHelper {
             ;
         }.execute();
     }
+
+
+
+    @SuppressLint("StaticFieldLeak")
+    public void fetchAddress1(final Activity contex, final Location location, final TextView txtSourceLocation) {
+        if (running)
+            return;
+
+        new AsyncTask<Void, Void, String>() {
+            protected void onPreExecute() {
+                running = true;
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                String Address = null;
+
+                if (Geocoder.isPresent()) {
+                    try {
+                        Geocoder geocoder = new Geocoder(contex, Locale.getDefault());
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        if (addresses.size() > 0) {
+                            final Address address = addresses.get(0);
+                            Log.e("Home", "run: address line 0: " + addresses.get(0).getAddressLine(0));
+                            Log.e("Home", "run: address : " + addresses.get(0));
+
+
+                            if (address != null) {
+                                final StringBuilder sb = new StringBuilder();
+                                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                                    sb.append(address.getAddressLine(i) + " ");
+                                }
+
+                                if (sb.toString().length() > 0) {
+                                    Address = sb.toString();
+                                } else {
+                                    Log.e("FROM Third ELSE :", "ELSE");
+                                }
+//                                contex.runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        mAutoCompleteView.setFocusable(false);
+//                                        mAutoCompleteView.setFocusableInTouchMode(false);
+//                                        mAutoCompleteView.setText(sb.toString());
+//                                        mAutoCompleteView.setFocusable(true);
+//                                        mAutoCompleteView.setFocusableInTouchMode(true);
+//                                        mAutoCompleteView.setOnItemClickListener(null);
+//                                        mAutoCompleteView.setText(sb.toString());
+//                                        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
+//                                    }
+//                                });
+                                txtSourceLocation.setText(Address);
+                            } else {
+                                Log.e("FROM second ELSE :", "ELSE");
+                            }
+                        } else {
+                            Log.e("FROM FIRST ELSE :", "ELSE");
+                        }
+                    } catch (Exception ignored) {
+                        ignored.printStackTrace();
+                        // after a while, Geocoder start to trhow "Service not availalbe" exception. really weird since it was working before (same device, same Android version etc..
+                    }
+                }
+
+                if (Address != null) // i.e., Geocoder succeed
+                {
+                    return Address;
+                } else // i.e., Geocoder failed
+                {
+                    return fetchAddressUsingGoogleMap();
+                }
+            }
+
+            // Geocoder failed :-(
+            // Our B Plan : Google Map
+            private String fetchAddressUsingGoogleMap() {
+                String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + location.getLatitude() + ","
+                        + location.getLongitude() + "&sensor=false&language=en";
+
+                try {
+                    /*JSONObject googleMapResponse = new JSONObject(ANDROID_HTTP_CLIENT.execute(new HttpGet(googleMapUrl),
+                            new BasicResponseHandler()));*/
+
+                    URL url = new URL(googleMapUrl);
+                    JSONObject googleMapResponse = null;
+
+                    try {
+                        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                        int responseCode = urlConnection.getResponseCode();
+
+                        if (responseCode == HttpURLConnection.HTTP_OK) {
+                            String server_response = readStream(urlConnection.getInputStream());
+                            if (server_response != null && server_response.length() > 0) {
+                                googleMapResponse = new JSONObject(server_response);
+                                urlConnection.disconnect();
+                            }
+                            Log.v("CatalogClient", server_response);
+                        } else {
+                            Log.e("MAP REQUEST : ", responseCode + "");
+                            urlConnection.disconnect();
+                        }
+
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // many nested loops.. not great -> use expression instead
+                    // loop among all results
+                    JSONArray results = (JSONArray) googleMapResponse.get("results");
+                    if (results != null && results.length() > 0) {
+                        JSONObject result = results.getJSONObject(0);
+
+                        if (result.has("formatted_address")) {
+                            final String address = result.getString("formatted_address");
+                            if (address != null && address.length() > 0) {
+//                                contex.runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        mAutoCompleteView.setFocusable(false);
+//                                        mAutoCompleteView.setFocusableInTouchMode(false);
+//                                        mAutoCompleteView.setText(address);
+//                                        mAutoCompleteView.setFocusable(true);
+//                                        mAutoCompleteView.setFocusableInTouchMode(true);
+//                                        mAutoCompleteView.setOnItemClickListener(null);
+//                                        mAutoCompleteView.setText(address);
+//                                        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
+//                                    }
+//                                });
+                                txtSourceLocation.setText(address);
+                                return address;
+                            }
+                        }
+                    }
+                } catch (Exception ignored) {
+                    ignored.printStackTrace();
+                }
+                return null;
+            }
+
+            protected void onPostExecute(String Address) {
+                running = false;
+                if (Address != null) {
+                    // Do something with cityName
+                    Log.i("GeocoderHelper", Address);
+                }
+            }
+
+            ;
+        }.execute();
+    }
+
+
 
     private String readStream(InputStream in) {
         BufferedReader reader = null;

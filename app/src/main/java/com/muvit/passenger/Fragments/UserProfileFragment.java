@@ -22,8 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.muvit.passenger.Activities.HomeActivity;
 import com.muvit.passenger.Activities.HomeLocationActivity;
+import com.muvit.passenger.Activities.Step2Activity;
 import com.muvit.passenger.Activities.UserEditProfileActivity;
 import com.muvit.passenger.Activities.WorkLocationActivity;
 import com.muvit.passenger.AsyncTask.ParseJSON;
@@ -72,8 +72,8 @@ public class UserProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
-        ((HomeActivity)getActivity()).hideToolbar();
-        ((HomeActivity)getActivity()).hideToolbarTiltle();
+        ((Step2Activity)getActivity()).hideToolbar();
+        ((Step2Activity)getActivity()).hideToolbarTiltle();
         intiView(rootView);
 
         txtAddWorkLocation.setOnClickListener(new View.OnClickListener() {
@@ -178,7 +178,7 @@ public class UserProfileFragment extends Fragment {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity)getActivity()).showToolbar();
+                ((Step2Activity)getActivity()).showToolbar();
                 FragmentManager fm = getActivity()
                         .getSupportFragmentManager();
                 fm.popBackStack();
@@ -319,7 +319,7 @@ public class UserProfileFragment extends Fragment {
                     PrefsUtil.with(getActivity()).write("profileImage", WebServiceUrl.profileUrl + profileItem.getUId() + "/" + profileItem.getProfileImage());
 
                     try {
-                        ((HomeActivity) getActivity()).updateHeader();
+                        ((Step2Activity) getActivity()).updateHeader();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -453,8 +453,8 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)getActivity()).hideToolbar();
-        ((HomeActivity)getActivity()).hideToolbarTiltle();
+        ((Step2Activity)getActivity()).hideToolbar();
+        ((Step2Activity)getActivity()).hideToolbarTiltle();
     }
 
     @Override

@@ -1,7 +1,12 @@
 package com.muvit.passenger.Activities;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -13,6 +18,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -37,11 +50,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.koushikdutta.ion.bitmap.Transform;
 import com.muvit.passenger.Application.ApplicationController;
 import com.muvit.passenger.AsyncTask.ParseJSON;
+import com.muvit.passenger.Fragments.AboutFragment;
+import com.muvit.passenger.Fragments.AccountSettingsFragment;
+import com.muvit.passenger.Fragments.HelpFragment;
+import com.muvit.passenger.Fragments.HomeFragment;
+import com.muvit.passenger.Fragments.InfoFragment;
+import com.muvit.passenger.Fragments.MyTripsFragment;
+import com.muvit.passenger.Fragments.NotificationsFragment;
+import com.muvit.passenger.Fragments.UserProfileFragment;
+import com.muvit.passenger.Fragments.WalletFragment;
 import com.muvit.passenger.GeoLocation.activity.GeocoderHelper;
 import com.muvit.passenger.GeoLocation.adapter.PlaceAutocompleteAdapter;
 import com.muvit.passenger.GeoLocation.logger.Log;
+import com.muvit.passenger.Models.CommonPOJO;
 import com.muvit.passenger.Models.ConfirmRidePOJO;
 import com.muvit.passenger.Models.DefaultPaymentMethodPOJO;
 import com.muvit.passenger.Models.FareEstimateItem;
@@ -50,6 +75,7 @@ import com.muvit.passenger.Models.MessageEvent;
 import com.muvit.passenger.Models.UserLocationPOJO;
 import com.muvit.passenger.R;
 import com.muvit.passenger.Utils.ConnectionCheck;
+import com.muvit.passenger.Utils.ImgUtils;
 import com.muvit.passenger.Utils.KeyboardUtils;
 import com.muvit.passenger.Utils.PrefsUtil;
 import com.muvit.passenger.WebServices.WebServiceUrl;
@@ -86,12 +112,20 @@ import java.util.TimerTask;
 
 public class Step2Activity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    public ActionBarDrawerToggle toggle;
+    FragmentManager fragmentManager;
+    BroadcastReceiver mMessageReceiver;
+
+
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-    protected GoogleApiClient mGoogleApiClient;
-    Dialog promoDialog,fareDialog;
-    RelativeLayout cancelBtn,okBtn,cancelFare ;
-    TextView fareView,startLocation,endLocation,car_name;
+    //    protected GoogleApiClient mGoogleApiClient;
+    Dialog promoDialog, fareDialog;
+    RelativeLayout cancelBtn, okBtn, cancelFare;
+    TextView fareView, startLocation, endLocation, car_name;
 
     LatLng fromLat;
     String carTypeId = "0";
@@ -104,8 +138,8 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
     Dialog dialog;
     private Toolbar toolbar;
     private TextView txtTitle, txtSource;
-    private ImageView imgWallet, dashLine, imgLocation,close_anim;
-    LinearLayout imgCash,txtFareEstimate;
+    private ImageView imgWallet, dashLine, imgLocation, close_anim;
+    LinearLayout imgCash, txtFareEstimate;
     RelativeLayout promo_btn;
     private Button btnBooknRide;
     private PopupWindow popupWindow;
@@ -146,8 +180,8 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
             final String placeId = String.valueOf(item.placeId);
             Log.i("Step2Activity", "Autocomplete item selected: " + item.description);
 
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+//            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+//            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
             //Toast.makeText(Step2Activity.this, "Clicked: " + item.description, Toast.LENGTH_SHORT).show();
             Log.i("Step2Activity", "Called getPlaceById to get Place details for " + item.placeId);
@@ -160,17 +194,23 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step2);
         initViews();
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(getListener());
         //getDefaultPaymentMethod();
         defaultPaymentMethod = "c";
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /*clientId*/, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
-
-        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
-        mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
-        mAutoCompleteView.setAdapter(mAdapter);
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, 0 /*clientId*/, this)
+//                .addApi(Places.GEO_DATA_API)
+//                .addConnectionCallbacks()
+//                .addOnConnectionFailedListener()
+//                .build();
+//
+//        mGoogleApiClient.connect();
+//
+////        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
+//        mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
+//                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
+//        mAutoCompleteView.setAdapter(mAdapter);
 
         /*imgWallet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +224,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         });*/
         //imgCash.setImageResource(R.drawable.cash);
         //btnBooknRide.setBackgroundColor(getResources().getColor(R.color.yellowColor));
-       // btnBooknRide.setTypeface(null, Typeface.BOLD);
+        // btnBooknRide.setTypeface(null, Typeface.BOLD);
 
         /*imgCash.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,54 +237,297 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
             }
         });*/
 
-        btnBooknRide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        btnBooknRide.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                /*intent = new Intent(Step2Activity.this, RideInformationActivity.class);
+//                startActivity(intent);*/
+//                if (!TextUtils.isEmpty(mAutoCompleteView.getText().toString())) {
+//                    getFareSummary(false);
+//                } else {
+//                    Toast.makeText(Step2Activity.this, "Please Select Drop off Location" +
+//                            "", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
-                /*intent = new Intent(Step2Activity.this, RideInformationActivity.class);
-                startActivity(intent);*/
-                if (!TextUtils.isEmpty(mAutoCompleteView.getText().toString())) {
-                    getFareSummary(false);
-                } else {
-                    Toast.makeText(Step2Activity.this, "Please Select Drop off Location" +
-                            "", Toast.LENGTH_SHORT).show();
+//        txtFareEstimate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (!TextUtils.isEmpty(mAutoCompleteView.getText().toString())) {
+//                    txtFareEstimate.setClickable(false);
+//                    getFareSummary(true);
+//                } else {
+//                    Toast.makeText(Step2Activity.this, "Please Select Drop off Location" +
+//                            "", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        });
+//        setUpMap();
+//        imgLocation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getUserLocation();
+//            }
+//        });
+//        try {
+//            fromLat = new LatLng(getIntent().getDoubleExtra("lat", 0.0), getIntent().getDoubleExtra("long", 0.0));
+//            txtSource.setText(getIntent().getStringExtra("location"));
+//            carTypeId = String.valueOf(getIntent().getIntExtra("carItemId", 0));
+//            subCarTypeId = String.valueOf(getIntent().getIntExtra("subCarTypeId", 0));
+//
+//        } catch (Exception e) {
+//            fromLat = new LatLng(0.0, 0.0);
+//            e.printStackTrace();
+//        }
+        initNavigationDrawer();
+        //todo пока коментим
+//        txtTitle.setText(R.string.home);
+        updateDisplay(new HomeFragment(), R.string.home);
+    }//onCreate
+
+
+    private FragmentManager.OnBackStackChangedListener getListener() {
+        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
+            public void onBackStackChanged() {
+                FragmentManager manager = getSupportFragmentManager();
+
+                if (manager != null) {
+                    Fragment currFrag = fragmentManager.findFragmentById(R.id.containerView);
+                    if (currFrag instanceof HomeFragment || currFrag instanceof NotificationsFragment || currFrag instanceof MyTripsFragment ||
+                            currFrag instanceof AccountSettingsFragment) {
+                        showToolbar();
+                    } else {
+                        hideToolbar();
+                    }
+
+                    if (currFrag instanceof NotificationsFragment || currFrag instanceof MyTripsFragment ||
+                            currFrag instanceof AccountSettingsFragment
+                            ) {
+                        turnActionBarIconWhite();
+
+                    } else {
+                        turnActionBarIconBlack();
+                    }
+                    //showToolbar();
+//                    MyFragment currFrag = (MyFragment) manager.findFragmentById(R.id.fragmentItem);
+//
+//                    currFrag.onFragmentResume();
                 }
             }
-        });
+        };
+        return result;
+    }//getListener
 
-        txtFareEstimate.setOnClickListener(new View.OnClickListener() {
+
+    private void initNavigationDrawer() {
+        // txtTitle.setText(R.string.home);
+        navigationView.setCheckedItem(R.id.home);
+        updateDisplay(new HomeFragment(), R.string.home);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                        int id = menuItem.getItemId();
+
+                        switch (id) {
+                            case R.id.home:
+                                txtTitle.setText(R.string.home);
+                                updateDisplay(new HomeFragment(), R.string.home);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.myProfile:
+                                txtTitle.setText(R.string.my_profile);
+                                updateDisplay(new UserProfileFragment(), R.string.my_profile);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.payments:
+                                startActivity(new Intent(Step2Activity.this, PaymentsActivity.class));
+
+                                break;
+                            case R.id.wallet:
+                                txtTitle.setText(R.string.nav_wallet);
+                                updateDisplay(new WalletFragment(), R.string.nav_wallet);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.rides:
+                                txtTitle.setText(R.string.rides);
+                                updateDisplay(new MyTripsFragment(), R.string.rides);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.notifications:
+                                txtTitle.setText(R.string.notifications);
+                                updateDisplay(new NotificationsFragment(), R.string.notifications);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.account_settings:
+                                txtTitle.setText(R.string.account_settings);
+                                updateDisplay(new AccountSettingsFragment(), R.string.account_settings);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.help:
+                                txtTitle.setText(R.string.help);
+                                updateDisplay(new HelpFragment(), R.string.help);
+                                drawerLayout.closeDrawers();
+                                break;
+
+                            case R.id.invite_friends:
+                                startActivity(new Intent(Step2Activity.this, InviteFriendActivity.class));
+                                break;
+                            case R.id.about:
+                                txtTitle.setText(R.string.about);
+                                updateDisplay(new AboutFragment(), R.string.about);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.info:
+                                txtTitle.setText(R.string.info);
+                                updateDisplay(new InfoFragment(), R.string.info);
+                                drawerLayout.closeDrawers();
+                                break;
+                            case R.id.logout:
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Step2Activity.this);
+                                builder.setMessage("Are you sure you want logout?")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                        /*PrefsUtil.with(HomeActivity.this).clearPrefs();
+                                        PrefsUtil.with(HomeActivity.this).write("isLoggedIn",false);
+                                        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();*/
+                                                logout();
+                                            }
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                            }
+                                        });
+                                // Create the AlertDialog object and return it
+                                builder.create();
+                                builder.show();
+
+                                break;
+                        }
+                        return true;
+                    }
+                });
+        View header = navigationView.getHeaderView(0);
+        ImageView imgProfile = (ImageView) header.findViewById(R.id.imgProfile);
+        //imgProfile.setImageResource(R.mipmap.ic_launcher);
+        Ion.with(imgProfile)
+                .error(R.drawable.no_image)
+                .transform(new Transform() {
+                    @Override
+                    public Bitmap transform(Bitmap b) {
+                        return ImgUtils.createCircleBitmap(b);
+                    }
+
+                    @Override
+                    public String key() {
+                        return null;
+                    }
+                })
+                .load(PrefsUtil.with(this).readString("profileImage"));
+        TextView txtUserName = (TextView) header.findViewById(R.id.txtUserName);
+        txtUserName.setText(PrefsUtil.with(this).readString("firstName") + " " + PrefsUtil.with(this).readString("lastName"));
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
             @Override
-            public void onClick(View v) {
-
-                if (!TextUtils.isEmpty(mAutoCompleteView.getText().toString())) {
-                    txtFareEstimate.setClickable(false);
-                    getFareSummary(true);
-                } else {
-                    Toast.makeText(Step2Activity.this, "Please Select Drop off Location" +
-                            "", Toast.LENGTH_SHORT).show();
-                }
-
+            public void onDrawerClosed(View v) {
+                InputMethodManager mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                mImm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                v.requestFocus();
+                super.onDrawerClosed(v);
             }
-        });
-        setUpMap();
-        imgLocation.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                getUserLocation();
+            public void onDrawerOpened(View v) {
+                InputMethodManager mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                mImm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                v.requestFocus();
+                super.onDrawerOpened(v);
             }
-        });
+        };
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+    }//initNavigationDrawer
+
+
+    public void updateHeader() {
         try {
-            fromLat = new LatLng(getIntent().getDoubleExtra("lat", 0.0), getIntent().getDoubleExtra("long", 0.0));
-            txtSource.setText(getIntent().getStringExtra("location"));
-            carTypeId = String.valueOf(getIntent().getIntExtra("carItemId", 0));
-            subCarTypeId = String.valueOf(getIntent().getIntExtra("subCarTypeId", 0));
+            View header = navigationView.getHeaderView(0);
+        /*CircleImageView imgProfile = (CircleImageView) header.findViewById(R.id.imgProfile);
+        imgProfile.setImageResource(R.mipmap.ic_launcher);*/
+            ImageView imgProfile = (ImageView) header.findViewById(R.id.imgProfile);
+            //imgProfile.setImageResource(R.mipmap.ic_launcher);
+            Ion.with(imgProfile)
+                    .transform(new Transform() {
+                        @Override
+                        public Bitmap transform(Bitmap b) {
+                            return ImgUtils.createCircleBitmap(b);
+                        }
 
+                        @Override
+                        public String key() {
+                            return null;
+                        }
+                    })
+                    .load(PrefsUtil.with(Step2Activity.this).readString("profileImage"));
+            TextView txtUserName = (TextView) header.findViewById(R.id.txtUserName);
+            txtUserName.setText(PrefsUtil.with(this).readString("firstName") + " " + PrefsUtil.with(this).readString("lastName"));
         } catch (Exception e) {
-            fromLat = new LatLng(0.0, 0.0);
             e.printStackTrace();
         }
+    }//updateHeader
 
-    }
+
+    private void updateDisplay(Fragment fragment, int res) {
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().add(R.id.containerView,
+                fragment).addToBackStack(getResources().getString(res)).commit();
+    }//updateDisplay
+
+
+    private void logout() {
+        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.logout;
+        ArrayList<String> params = new ArrayList<>();
+        params.add("userId");
+        params.add("userType");
+        params.add("deviceId");
+        ArrayList<String> values = new ArrayList<>();
+        values.add(String.valueOf(PrefsUtil.with(Step2Activity.this).readInt("uId")));
+        values.add("u");
+        values.add(FirebaseInstanceId.getInstance().getToken());
+        new ParseJSON(Step2Activity.this, url, params, values, CommonPOJO.class, new ParseJSON.OnResultListner() {
+            @Override
+            public void onResult(boolean status, Object obj) {
+                if (status) {
+                    CommonPOJO resultObj = (CommonPOJO) obj;
+                    Toast.makeText(Step2Activity.this, resultObj.getMessage(), Toast.LENGTH_SHORT).show();
+                    PrefsUtil.with(Step2Activity.this).clearPrefs();
+                    PrefsUtil.with(Step2Activity.this).write("isLoggedIn", false);
+                    Intent intent = new Intent(Step2Activity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(Step2Activity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
+                    PrefsUtil.with(Step2Activity.this).clearPrefs();
+                    PrefsUtil.with(Step2Activity.this).write("isLoggedIn", false);
+                    Intent intent = new Intent(Step2Activity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+    }//logout
+
 
     public void setPickupMarker(LatLng point, String location) {
         try {
@@ -281,9 +564,19 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
             // Toast.makeText(Step2Activity.this, "Cannot get address from clicked location", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-    }
+    }//setPickupMarker
+
 
     private void initViews() {
+        navigationView = findViewById(R.id.navigation_view);
+        drawerLayout = findViewById(R.id.drawer);
+        toggle = new ActionBarDrawerToggle(
+                        this,
+                        drawerLayout,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close) {
+        };
+
         setupToolbar();
         imgWallet = findViewById(R.id.imgWallet);
         imgCash = findViewById(R.id.card_btn);
@@ -291,58 +584,59 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         promo_btn = (RelativeLayout) findViewById(R.id.promo_btn);
         initPromoDialog();
         initEstimate();
-        promo_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // showPromoDialog();
-                promoDialog.show();
-            }
-        });
-
-
+        //todo пока коментим
+//        promo_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // showPromoDialog();
+//                promoDialog.show();
+//            }
+//        });
 
         txtFareEstimate = findViewById(R.id.txtFareEstimate);
-        txtSource = findViewById(R.id.txtSource);
-        txtSource.setMovementMethod(new ScrollingMovementMethod());
+        //todo пока коментим
+//        txtSource = findViewById(R.id.txtSource);
+//        txtSource.setMovementMethod(new ScrollingMovementMethod());
         dashLine = findViewById(R.id.dashLine);
         imgLocation = findViewById(R.id.imgLocation);
         layoutOverlay = findViewById(R.id.layoutOverlayAnim);
-        close_anim = (ImageView) findViewById(R.id.close_anim) ;
-        close_anim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layoutOverlay.setVisibility(View.GONE);
-            }
-        });
+        //todo пока коментим
+//        close_anim = (ImageView) findViewById(R.id.close_anim) ;
+//        close_anim.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                layoutOverlay.setVisibility(View.GONE);
+//            }
+//        });
 
-        txtSwitcherMessage = findViewById(R.id.txtSwitcherMessage);
-        txtSwitcherMessage.setFactory(new ViewSwitcher.ViewFactory() {
+//        txtSwitcherMessage = findViewById(R.id.txtSwitcherMessage);
+//        txtSwitcherMessage.setFactory(new ViewSwitcher.ViewFactory() {
+//
+//            public View makeView() {
+//                // TODO Auto-generated method stub
+//                // create a TextView
+//                TextView t = new TextView(Step2Activity.this);
+//                // set the gravity of text to top and center horizontal
+//                t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+//                t.setTextColor(Color.WHITE);
+//                t.setTextSize(15);
+//                return t;
+//            }
+//        });
 
-            public View makeView() {
-                // TODO Auto-generated method stub
-                // create a TextView
-                TextView t = new TextView(Step2Activity.this);
-                // set the gravity of text to top and center horizontal
-                t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-                t.setTextColor(Color.WHITE);
-                t.setTextSize(15);
-                return t;
-            }
-        });
+//        txtFareEstimate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                fareDialog.show();
+//            }
+//        });
 
-        txtFareEstimate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fareDialog.show();
-            }
-        });
-
-        txtSwitcherMessage.setInAnimation(Step2Activity.this, android.R.anim.slide_in_left);
-        txtSwitcherMessage.setOutAnimation(Step2Activity.this, android.R.anim.slide_out_right);
+//        txtSwitcherMessage.setInAnimation(Step2Activity.this, android.R.anim.slide_in_left);
+//        txtSwitcherMessage.setOutAnimation(Step2Activity.this, android.R.anim.slide_out_right);
         geocoder = new Geocoder(this, Locale.getDefault());
         mAutoCompleteView = findViewById(R.id.autocomplete_places);
-        dashLine.bringToFront();
-        dashLine.invalidate();
+//        dashLine.bringToFront();
+//        dashLine.invalidate();
         new KeyboardUtils().setupUI(findViewById(R.id.activity_step2), Step2Activity.this);
 
         final long period = 3000;
@@ -360,22 +654,15 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                         if (message_counter[0] >= 4) {
                             message_counter[0] = 0;
                         }
-                        txtSwitcherMessage.setText(messageArray[message_counter[0]]);
+                        //todo пока коментим
+//                        txtSwitcherMessage.setText(messageArray[message_counter[0]]);
                     }
                 });
                 message_counter[0] = (message_counter[0] + 1);
             }
         }, 0, period);
-    }
+    }//initViews
 
-    private void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolBar);
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtTitle.setText(R.string.step2_title);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -391,7 +678,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
 
 
     private void initPromoDialog() {
-       // final View view = getLayoutInflater().inflate(R.layout.promo_dialog, null);
+        // final View view = getLayoutInflater().inflate(R.layout.promo_dialog, null);
         promoDialog = new Dialog(this);
         promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -411,10 +698,9 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                 promoDialog.dismiss();
             }
         });
-
         promoDialog.setCancelable(false);
-    
     }
+
 
     private void initEstimate() {
         // final View view = getLayoutInflater().inflate(R.layout.promo_dialog, null);
@@ -423,7 +709,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         fareDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         fareDialog.setContentView(R.layout.estimate_dialog);
         car_img_fare = (ImageView) fareDialog.findViewById(R.id.car_img_fare);
-       cancelFare = (RelativeLayout) fareDialog.findViewById(R.id.cancel_fare);
+        cancelFare = (RelativeLayout) fareDialog.findViewById(R.id.cancel_fare);
         car_name = (TextView) fareDialog.findViewById(R.id.car_name);
 
         cancelFare.setOnClickListener(new View.OnClickListener() {
@@ -433,16 +719,15 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-
         fareView = fareDialog.findViewById(R.id.fare);
         startLocation = fareDialog.findViewById(R.id.src_addr);
         endLocation = fareDialog.findViewById(R.id.destination_addr);
 
         fareDialog.setCancelable(false);
-
     }
-    
-    private void popupEstimateNew(FareEstimateItem fareSummaryItem){
+
+
+    private void popupEstimateNew(FareEstimateItem fareSummaryItem) {
         startLocation.setText(fareSummaryItem.getPickUpLocation());
         endLocation.setText(fareSummaryItem.getDropOffLocation());
         car_name.setText(fareSummaryItem.getCarTypeName());
@@ -451,8 +736,9 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                 .load(WebServiceUrl.carUrl + fareSummaryItem.getCarTypeImage());
         fareView.setText(fareSummaryItem.getFareDistanceCharges());
         fareDialog.show();
-
     }
+
+
     private void popupFareEstimate(FareEstimateItem fareSummaryItem) {
         View popUpView = getLayoutInflater().inflate(R.layout.popup_fare_estimate, null);
         popupWindow = new PopupWindow(popUpView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
@@ -518,8 +804,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void setUpMap() {
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         //mapFragment.getMapAsync(this);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -532,14 +817,12 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
                 setPickupMarker(fromLat, txtSource.getText().toString());
-
             }
         });
 
     }
 
     public void setMarker(final LatLng point) {
-
         Runnable newthread = new Runnable() {
 
             @Override
@@ -772,11 +1055,10 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                 } else {
                     Toast.makeText(Step2Activity.this, (String) obj, Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
     }
+
 
     private void showLocationDialog() {
         dialog = new Dialog(Step2Activity.this);
@@ -817,8 +1099,6 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                 } else {
                     // Toast.makeText(Step2Activity.this, "You have not set Home location", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -831,8 +1111,6 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                 } else {
                     // Toast.makeText(Step2Activity.this, "You have not set Work location", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -846,7 +1124,6 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         if (layoutOverlay.getVisibility() != View.VISIBLE) {
             super.onBackPressed();
         }
-
     }
 
 
@@ -938,6 +1215,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
+
     private void moveToCurrentLocation() {
         try {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -955,8 +1233,92 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
 
             map.animateCamera(cu);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void setupToolbar() {
+        toolbar = findViewById(R.id.toolBar);
+
+        txtTitle = findViewById(R.id.txtTitle);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+
+    public void showToolbarTiltle(String title) {
+        txtTitle.setText(title);
+        txtTitle.setVisibility(View.VISIBLE);
+    }
+
+    public void hideToolbarTiltle() {
+        //txtTitle.setText(title);
+        txtTitle.setVisibility(View.GONE);
+    }
+
+    public void turnActionBarIconWhite() {
+        toggle = new ActionBarDrawerToggle
+                (
+                        this,
+                        drawerLayout,
+                        toolbar,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close
+                ) {
+        };
+        toggle.setDrawerIndicatorEnabled(false);
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        toggle.setHomeAsUpIndicator(R.drawable.ic_hamburger_white);
+
+
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.white));
+        changeBackgroundToolBar(R.color.dull_golden);
+    }
+
+    public void turnActionBarIconBlack() {
+        toggle = new ActionBarDrawerToggle
+                (
+                        this,
+                        drawerLayout,
+                        toolbar,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close
+                ) {
+        };
+        toggle.setDrawerIndicatorEnabled(false);
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        toggle.setHomeAsUpIndicator(R.drawable.ic_hamburger_black);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.light_black));
+        changeBackgroundToolBar(R.color.transparent);
+    }
+
+
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
+    }
+
+    public void showToolbar() {
+        toolbar.setVisibility(View.VISIBLE);
+
+    }
+
+    public void changeBackgroundToolBar(int id) {
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, id));
     }
 }

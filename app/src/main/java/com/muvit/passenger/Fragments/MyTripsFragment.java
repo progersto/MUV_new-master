@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.muvit.passenger.Activities.HomeActivity;
+import com.muvit.passenger.Activities.Step2Activity;
 import com.muvit.passenger.Adapters.MyTripsAdapter;
 import com.muvit.passenger.AsyncTask.ParseJSON;
 import com.muvit.passenger.Models.DummyItems;
@@ -233,10 +233,10 @@ public class MyTripsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getActivity() instanceof HomeActivity){
-            ((HomeActivity)getActivity()).showToolbar();
-            ((HomeActivity)getActivity()).showToolbarTiltle("My Trips");
-            ((HomeActivity)getActivity()).turnActionBarIconWhite();
+        if(getActivity() instanceof Step2Activity){
+            ((Step2Activity)getActivity()).showToolbar();
+            ((Step2Activity)getActivity()).showToolbarTiltle("My Trips");
+            ((Step2Activity)getActivity()).turnActionBarIconWhite();
         }
     }
 

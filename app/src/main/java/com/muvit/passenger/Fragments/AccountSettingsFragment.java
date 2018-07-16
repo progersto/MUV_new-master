@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.muvit.passenger.Activities.HomeActivity;
+import com.muvit.passenger.Activities.Step2Activity;
 import com.muvit.passenger.AsyncTask.ParseJSON;
 import com.muvit.passenger.Models.AccountSettingsItem;
 import com.muvit.passenger.Models.AccountSettingsPOJO;
@@ -367,10 +367,10 @@ public class AccountSettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getActivity() instanceof HomeActivity){
-            ((HomeActivity)getActivity()).showToolbar();
-            ((HomeActivity)getActivity()).showToolbarTiltle("Settings");
-            ((HomeActivity)getActivity()).turnActionBarIconWhite();
+        if(getActivity() instanceof Step2Activity){
+            ((Step2Activity)getActivity()).showToolbar();
+            ((Step2Activity)getActivity()).showToolbarTiltle("Settings");
+            ((Step2Activity)getActivity()).turnActionBarIconWhite();
         }
     }
 }
