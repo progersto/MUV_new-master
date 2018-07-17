@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.muvit.passenger.R;
 
 public class CardDetailsActivity extends AppCompatActivity {
     ImageView back_btn;
     Button change_card;
+    private TextView textCardNum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,5 +32,13 @@ public class CardDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        textCardNum = findViewById(R.id.textCardNum);
+        StringBuffer sb = new StringBuffer(getIntent().getStringExtra("cardNum"));
+        sb.insert(4," ");
+        sb.insert(9," ");
+        sb.insert(14," ");
+
+        textCardNum.setText(sb.toString());
     }
 }

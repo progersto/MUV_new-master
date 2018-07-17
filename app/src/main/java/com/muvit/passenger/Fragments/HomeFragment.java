@@ -49,7 +49,10 @@ import android.widget.ViewSwitcher;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.koushikdutta.ion.Ion;
+import com.muvit.passenger.Activities.AddCardActivity;
+import com.muvit.passenger.Activities.DepositFundActivity;
 import com.muvit.passenger.Activities.HomeActivity;
+import com.muvit.passenger.Activities.PaymentsActivity;
 import com.muvit.passenger.Adapters.HomeAdapter;
 import com.muvit.passenger.Adapters.SubCarTypeAdapter;
 import com.muvit.passenger.Application.ApplicationController;
@@ -88,6 +91,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.muvit.passenger.database.AppDatabase;
+import com.muvit.passenger.database.Card;
+import com.muvit.passenger.database.CardDao;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -100,6 +106,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by nct119 on 28/10/16.
@@ -200,6 +210,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private LinearLayout subCarLayout, carLayout;
     private LocationManager locationManager;
     private Timer mTimer1;
+    private Disposable disposable;
+    private CardDao cardDao;
 
     private TimerTask mTt1;
     private Handler mTimerHandler = new Handler();
@@ -449,7 +461,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         });
 
 
-
         txtFareEstimate = rootView.findViewById(R.id.txtFareEstimate);
         txtSource = rootView.findViewById(R.id.txtSource);
         txtSource.setMovementMethod(new ScrollingMovementMethod());
@@ -641,6 +652,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
 
     private void initPaymentMethodDialog() {
+        AppDatabase db = ApplicationController.getInstance().getDatabase();
+        cardDao = db.cardDao();
+
         paymentMethodDialog = new Dialog(getContext());
         paymentMethodDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         paymentMethodDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -663,11 +677,53 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         btnCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //запрашиваем карты
+                getListAllCards();
                 paymentMethodDialog.dismiss();
             }
         });
         paymentMethodDialog.setCancelable(false);
     }//initPaymentMethodDialog
+
+
+    public void getListAllCards() {
+        disposable = cardDao.getListCards()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listAccounts -> {
+                    disposable.dispose();
+                    checkCard(listAccounts);
+                });
+    }//getListImageObj
+
+
+    private void checkCard(List<Card> listCards) {
+        if (listCards.size() > 0) {
+
+            startActivity(new Intent(getContext(), DepositFundActivity.class));
+            // идем в депозитфоунд
+//            betField.setText(String.valueOf(listAccounts.get(0).getBet()));
+//            jackpotField.setText(String.valueOf(listAccounts.get(0).getJackpot()));
+//            coinsField.setText(String.valueOf(listAccounts.get(0).getCoins()));
+//            textViewFieldLines.setText(String.valueOf(countLine));
+//            idAccount = listAccounts.get(0).getId();
+//            gameDataTemp = listAccounts.get(0);
+//            if (win_summ > 0) {
+//                summ.setText(String.valueOf(win_summ));
+//                contentViewCallback.animateContentIn(0, 400);
+//                snackbar.show();
+//                win_summ = 0;
+//            } else btnSpin.setClickable(true);
+        } else {
+            // открываем добавление карты в базу
+            startActivity(new Intent(getContext(), AddCardActivity.class));
+//            int bet = Integer.parseInt(betField.getText().toString());
+//            int jackpot = Integer.parseInt(jackpotField.getText().toString());
+//            int myCoins = Integer.parseInt(coinsField.getText().toString());
+//            GameData gameData = new GameData(jackpot, myCoins, bet);
+//            insertAccount(gameData);
+        }//if
+    }//sowData
 
 
     private void initEstimate() {
