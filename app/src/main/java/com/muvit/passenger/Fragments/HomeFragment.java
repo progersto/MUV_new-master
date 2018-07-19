@@ -46,6 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.flutterwave.raveandroid.RavePayManager;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.koushikdutta.ion.Ion;
@@ -135,115 +136,37 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     boolean isHomeLocation = false, isWorkLocation = false;
     Dialog dialog;
     private Toolbar toolbar;
-    private TextView txtTitle, txtSource;
+    private TextView txtTitle;
     private ImageView imgWallet, dashLine, imgLocation, close_anim;
     LinearLayout imgCash_btn, txtFareEstimate;
     RelativeLayout promo_btn;
     private Button btnBooknRide;
     private PopupWindow popupWindow;
-    private GoogleMap map;
-    private Marker marker;
+
     private LatLng selectedLatLng = new LatLng(0.0, 0.0);
     private Geocoder geocoder;
     private RelativeLayout layoutOverlay;
     private PlaceAutocompleteAdapter mAdapter;
-    private AutoCompleteTextView mAutoCompleteView;
+    private AutoCompleteTextView txtSource, mAutoCompleteView;
     private Marker pickupMarker;
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
-        @Override
-        public void onResult(PlaceBuffer places) {
-            if (!places.getStatus().isSuccess()) {
-                Log.e("Step2Activity", "Place query did not complete. Error: " + places.getStatus().toString());
-                places.release();
-                return;
-            } else {
-                //remove previously placed Marker
-                if (marker != null) {
-                    marker.remove();
-                }
-                selectedLatLng = places.get(0).getLatLng();
-                //place marker where user just clicked
-                marker = map.addMarker(new MarkerOptions().position(places.get(0).getLatLng()).title("Drop Off")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
-                moveToCurrentLocation();
-            }
-            places.release();
-        }
-    };
-    //    private AdapterView.OnItemClickListener
-//            mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
-//            final String placeId = String.valueOf(item.placeId);
-//            Log.i("Step2Activity", "Autocomplete item selected: " + item.description);
-//
-//            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
-//            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-//
-//            //Toast.makeText(Step2Activity.this, "Clicked: " + item.description, Toast.LENGTH_SHORT).show();
-//            Log.i("Step2Activity", "Called getPlaceById to get Place details for " + item.placeId);
-//        }
-//    };
+    private Marker dropOffMarker;
     private ImageView car_img_fare;
-
 
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000 * 1; // 1 second
     GoogleMap googleMap;
-    private RecyclerView recyclerView;
-    private RecyclerView rvSubType;
-    private LinearLayoutManager layoutManager;
-    private LinearLayoutManager carTypelayoutManager;
-    private ArrayList<CarsItem> arrayList;
-    private ArrayList<SubCarTypeItem> caryTypeList;
-    private HomeAdapter adapter;
-    private SubCarTypeAdapter subCarTypeAdapter;
-    private ImageView imgPrev, imgNext, imgSubPrev, imgSubNext;
-    private String url;
-    private ArrayList<String> params;
-    private ArrayList<String> values;
     private LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-    private LinearLayout subCarLayout, carLayout;
     private LocationManager locationManager;
     private Timer mTimer1;
     private Disposable disposable;
     private CardDao cardDao;
-
     private TimerTask mTt1;
     private Handler mTimerHandler = new Handler();
-    //    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
-//        @Override
-//        public void onResult(PlaceBuffer places) {
-//            if (!places.getStatus().isSuccess()) {
-//                android.util.Log.e("HomeLocationActivity", "Place query did not complete. Error: " + places.getStatus().toString());
-//                places.release();
-//                return;
-//            } else {
-//                //selectedLatLng = places.get(0).getLatLng();
-//                //setMarker(places.get(0).getLatLng());
-//                if (marker != null) {
-//                    marker.remove();
-//                }
-//                selectedLatLng = places.get(0).getLatLng();
-//                //place marker where user just clicked
-//                try {
-//                    marker = googleMap.addMarker(new MarkerOptions().position(places.get(0).getLatLng()).title("Pick Up")
-//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
-//                    moveToCurrentLocation(places.get(0).getLatLng());
-//                    KeyboardUtils.hideSoftKeyboard(getActivity());
-//                } catch (NullPointerException npe) {
-//                    npe.printStackTrace();
-//                }
-//            }
-//            places.release();
-//        }
-//    };
-    private AdapterView.OnItemClickListener
-            mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
+
+    private AdapterView.OnItemClickListener mAutocompleteDropOffClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
@@ -251,15 +174,54 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             Log.i("HomeFragment", "Autocomplete item selected: " + item.description);
 
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            placeResult.setResultCallback(mUpdateDropOffPlaceDetailsCallback);
+        }
+    };
 
-            //Toast.makeText(getActivity(), "Clicked: " + item.description, Toast.LENGTH_SHORT).show();
+    private AdapterView.OnItemClickListener mAutocompletePickUpClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            Log.i("HomeFragment", "Autocomplete item selected: " + item.description);
+
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePickUpPlaceDetailsCallback);
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdateDropOffPlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                Log.e("Step2Activity", "Place query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            } else {
+                setDropOffMarker(places.get(0).getLatLng());
+            }
+            places.release();
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePickUpPlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                Log.e("Step2Activity", "Place query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            } else {
+                setPickupMarker(places.get(0).getLatLng(), "PickUpLocation");
+            }
+            places.release();
         }
     };
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         initViewsNew(rootView);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity().getBaseContext()).addApi(Places.GEO_DATA_API).build();
@@ -276,124 +238,18 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
-//        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
-//        AutocompleteFilter.Builder builder = new AutocompleteFilter.Builder();
-//        builder.setTypeFilter(TYPE_COUNTRY);
-//
-//        //AutocompleteFilter filter = builder.setCountry("in").build();
-//        AutocompleteFilter filter = builder.build();
-//        mAdapter = new PlaceAutocompleteAdapter(getContext(), android.R.layout.simple_list_item_1,
-//                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, filter);
-//        mAutoCompleteView.setAdapter(mAdapter);
-//
-//        arrayList = new ArrayList<CarsItem>();
-//        caryTypeList = new ArrayList<SubCarTypeItem>();
-//        adapter = new HomeAdapter(getActivity(), arrayList, new HomeAdapter.SelectCarCallback() {
-//            @Override
-//            public void onCarSelected(CarsItem carsItem) {
-//                KeyboardUtils.hideSoftKeyboard(getActivity());
-//                if (carsItem.isSelected) {
-//                    if (!mAutoCompleteView.getText().toString().trim().isEmpty() || !mAutoCompleteView.getText().toString().trim().equalsIgnoreCase("")) {
-//                        getSubCarType(String.valueOf(carsItem.getId()));
-//                    } else {
-//                        Toast.makeText(getActivity(), "Please enter location to continue", Toast.LENGTH_SHORT).show();
-//                        adapter.resetSelection();
-//                        adapter.notifyDataSetChanged();
-//                        caryTypeList.clear();
-//                        subCarTypeAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//            }
-//        });
-//
-//        subCarTypeAdapter = new SubCarTypeAdapter(getActivity(), caryTypeList, new SubCarTypeAdapter.SelectCarCallback() {
-//            @Override
-//            public void onCarSelected(SubCarTypeItem subCarTypeItem) {
-//                KeyboardUtils.hideSoftKeyboard(getActivity());
-//                if (!mAutoCompleteView.getText().toString().isEmpty()) {
-//                    Intent i = new Intent(getActivity(), Step2Activity.class);
-//                    i.putExtra("lat", selectedLatLng.latitude);
-//                    i.putExtra("long", selectedLatLng.longitude);
-//                    i.putExtra("location", mAutoCompleteView.getText().toString());
-//                    i.putExtra("carItemId", adapter.getSelectedCar().getId());
-//                    i.putExtra("subCarTypeId", subCarTypeItem.getId());
-//                    startActivity(i);
-//                }
-//            }
-//        });
-//        recyclerView.setAdapter(adapter);
-//        rvSubType.setAdapter(subCarTypeAdapter);
-//
-//        imgNext.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView,
-//                            null, layoutManager.findLastVisibleItemPosition() + 1);
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//        });
-//
-//        imgPrev.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView,
-//                            null, layoutManager.findFirstVisibleItemPosition() - 1);
-//                } catch (Exception e) {
-//                }
-//
-//            }
-//        });
-//
-//
-//        imgSubNext.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    rvSubType.getLayoutManager().smoothScrollToPosition(rvSubType,
-//                            null,
-//                            carTypelayoutManager.findLastVisibleItemPosition() + 1);
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//        });
-//
-//        imgSubPrev.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    rvSubType.getLayoutManager().smoothScrollToPosition(rvSubType,
-//                            null,
-//                            carTypelayoutManager.findFirstVisibleItemPosition() - 1);
-//                } catch (Exception e) {
-//                }
-//
-//            }
-//        });
-//
-//        imgLocation.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getUserLocation();
-//            }
-//        });
-//        getCarTypes();
 
-
-//        initViewsNew();
         getDefaultPaymentMethod();
         defaultPaymentMethod = "c";
 
-        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
         mAdapter = new PlaceAutocompleteAdapter(getContext(), android.R.layout.simple_list_item_1,
                 mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
+
+        mAutoCompleteView.setOnItemClickListener(mAutocompleteDropOffClickListener);
         mAutoCompleteView.setAdapter(mAdapter);
+
+        txtSource.setOnItemClickListener(mAutocompletePickUpClickListener);
+        txtSource.setAdapter(mAdapter);
 
         btnBooknRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -565,42 +421,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //            e.printStackTrace();
 //        }
 //    }
-    public void setPickupMarker(LatLng point, String location) {
-        try {
-            List<Address> addresses = new ArrayList<>();
-            try {
-                addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            Address address = addresses.get(0);
-
-            if (address != null) {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                    sb.append(address.getAddressLine(i) + " ");
-                }
-                //Toast.makeText(WorkLocationActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
-            }
-
-            //remove previously placed Marker
-            if (pickupMarker != null) {
-                pickupMarker.remove();
-            }
-
-            //place marker where user just clicked
-            pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title(location)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
-            pickupMarker.showInfoWindow();
-            //moveToCurrentLocation(dropoffLatLng);
-            moveToCurrentLocation1(point);
-            //moveToCurrentLocation(point);
-        } catch (Exception e) {
-            // Toast.makeText(Step2Activity.this, "Cannot get address from clicked location", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
 
 
     private void setupToolbar(View rootView) {
@@ -618,7 +439,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         switch (item.getItemId()) {
             case android.R.id.home:
                 //todo пока коментим
-                //   onBackPressed();
+//                   onBackPressed();
                 return true;
 
             default:
@@ -699,29 +520,16 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     private void checkCard(List<Card> listCards) {
         if (listCards.size() > 0) {
-
-            startActivity(new Intent(getContext(), DepositFundActivity.class));
-            // идем в депозитфоунд
-//            betField.setText(String.valueOf(listAccounts.get(0).getBet()));
-//            jackpotField.setText(String.valueOf(listAccounts.get(0).getJackpot()));
-//            coinsField.setText(String.valueOf(listAccounts.get(0).getCoins()));
-//            textViewFieldLines.setText(String.valueOf(countLine));
-//            idAccount = listAccounts.get(0).getId();
-//            gameDataTemp = listAccounts.get(0);
-//            if (win_summ > 0) {
-//                summ.setText(String.valueOf(win_summ));
-//                contentViewCallback.animateContentIn(0, 400);
-//                snackbar.show();
-//                win_summ = 0;
-//            } else btnSpin.setClickable(true);
+            // идем в  активность пополнения счета
+            Intent intent = new Intent(getContext(), DepositFundActivity.class);
+            intent.putExtra("numCard", listCards.get(0).getNumberCard());
+            intent.putExtra("mm", listCards.get(0).getMonth());
+            intent.putExtra("yy", listCards.get(0).getYear());
+            intent.putExtra("cvv", listCards.get(0).getCvv());
+            startActivity(intent);
         } else {
             // открываем добавление карты в базу
             startActivity(new Intent(getContext(), AddCardActivity.class));
-//            int bet = Integer.parseInt(betField.getText().toString());
-//            int jackpot = Integer.parseInt(jackpotField.getText().toString());
-//            int myCoins = Integer.parseInt(coinsField.getText().toString());
-//            GameData gameData = new GameData(jackpot, myCoins, bet);
-//            insertAccount(gameData);
         }//if
     }//sowData
 
@@ -824,32 +632,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     public void setUpMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        //mapFragment.getMapAsync(this);
-//        mapFragment.getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(GoogleMap googleMap) {
-//                map = googleMap;
-//                map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//                    @Override
-//                    public void onMapClick(LatLng point) {
-//                        setMarker(point);
-//                    }
-//                });
-//                setPickupMarker(fromLat, txtSource.getText().toString());
-//            }
-//        });
-
-
-//        FragmentManager fm = getChildFragmentManager();
-//        SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
-//        if (mapFragment == null) {
-//            mapFragment = new SupportMapFragment();
-//            FragmentTransaction ft = fm.beginTransaction();
-//            ft.add(R.id.mapFragmentContainer, mapFragment, "mapFragment");
-//            ft.commit();
-//            fm.executePendingTransactions();
-//        }
-//====
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap1) {
@@ -871,8 +653,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                         @Override
                         public void onMapClick(LatLng point) {
                             if (!mAutoCompleteView.isPopupShowing()) {
-//                                setMarker(point);
-                                setMarkerOnMap(point);
+                                setDropOffMarker(point);
                             }
                             KeyboardUtils.hideSoftKeyboard(getActivity());
 
@@ -893,13 +674,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
                     } else {
                         selectedLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        setMarker(selectedLatLng);
+                        setPickupMarker(selectedLatLng, "PickUpLocation");
+                        moveToCurrentLocation1(selectedLatLng);
                         try {
                             fromLat = new LatLng(selectedLatLng.latitude, selectedLatLng.longitude);
-//                            txtSource.setText(mAutoCompleteView.getText().toString());
-                            // TODO: 13.07.2018 пока ставим заглушку для carTypeId и subCarTypeId
-//            carTypeId = String.valueOf(getIntent().getIntExtra("carItemId", 0));
-//            subCarTypeId = String.valueOf(getIntent().getIntExtra("subCarTypeId", 0));
                             carTypeId = String.valueOf(3);
                             subCarTypeId = String.valueOf(2);
                         } catch (Exception e) {
@@ -930,53 +708,94 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     }
 
-    public void setMarkerOnMap(final LatLng point) {
 
-//        Runnable newthread = new Runnable() {
-//
-//            @Override
-//            public void run() {
-        try {
-            selectedLatLng = point;
-            Location temp = new Location(LocationManager.GPS_PROVIDER);
-            temp.setLatitude(point.latitude);
-            temp.setLongitude(point.longitude);
-            GeocoderHelper gHelper = new GeocoderHelper();
-            gHelper.fetchAddress(getActivity(), temp,
-                    mAutoCompleteView, mAutocompleteClickListener);
+    public void setPickupMarker(LatLng point, String location) {
+        Runnable newthread = new Runnable() {
 
-            //remove previously placed Marker
-            if (pickupMarker != null) {
-                pickupMarker.remove();
+            @Override
+            public void run() {
+                try {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Location temp = new Location(LocationManager.GPS_PROVIDER);
+                                    temp.setLatitude(point.latitude);
+                                    temp.setLongitude(point.longitude);
+                                    GeocoderHelper gHelper = new GeocoderHelper();
+                                    gHelper.fetchAddress1(getActivity(), temp, txtSource);//вписываем адрес
+
+                                    //remove previously placed Marker
+                                    if (pickupMarker != null) {
+                                        pickupMarker.remove();
+                                    }
+
+                                    pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title(location)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
+                                    pickupMarker.showInfoWindow();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "Cannot get address from location", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    e.printStackTrace();
+                }
             }
 
-            //place marker where user just clicked
-            pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title("Drop Off")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
+        };
 
-            moveToCurrentLocation();
-        } catch (Exception e) {
-            Log.d("ss", e.getMessage());
-//                    if (getActivity() != null) {
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Toast.makeText(getActivity(), "Cannot get address from location", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
-            e.printStackTrace();
-        }
+        Thread t = new Thread(newthread);
+        t.start();
+
+
+//        try {
+//            List<Address> addresses = new ArrayList<>();
+//            try {
+//                addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1);
+//            } catch (IOException e) {
+//                e.printStackTrace();
 //            }
 //
-//        };
+//            Address address = addresses.get(0);
 //
-//        Thread t = new Thread(newthread);
-//        t.start();
+//            if (address != null) {
+//                StringBuilder sb = new StringBuilder();
+//                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+//                    sb.append(address.getAddressLine(i) + " ");
+//                }
+//                //Toast.makeText(WorkLocationActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
+//            }
+//
+//            //remove previously placed Marker
+//            if (pickupMarker != null) {
+//                pickupMarker.remove();
+//            }
+//
+//            //place marker where user just clicked
+//            pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title(location)
+//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
+//            pickupMarker.showInfoWindow();
+//            //moveToCurrentLocation(dropoffLatLng);
+//            //moveToCurrentLocation1(point);
+//            //moveToCurrentLocation(point);
+//        } catch (Exception e) {
+//            // Toast.makeText(Step2Activity.this, "Cannot get address from clicked location", Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
     }
 
-
-    public void setMarker(final LatLng point) {
+    public void setDropOffMarker(final LatLng point) {
         Runnable newthread = new Runnable() {
 
             @Override
@@ -992,17 +811,17 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                                     temp.setLatitude(point.latitude);
                                     temp.setLongitude(point.longitude);
                                     GeocoderHelper gHelper = new GeocoderHelper();
-                                    gHelper.fetchAddress1(getActivity(), temp, txtSource);//вписываем адрес
+                                    gHelper.fetchAddress1(getActivity(), temp, mAutoCompleteView);//вписываем адрес
 
                                     //remove previously placed Marker
-                                    if (marker != null) {
-                                        marker.remove();
+                                    if (dropOffMarker != null) {
+                                        dropOffMarker.remove();
                                     }
 
                                     //place marker where user just clicked
                                     try {
-                                        marker = googleMap.addMarker(new MarkerOptions().position(point).title("Pick Up")
-                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
+                                        dropOffMarker = googleMap.addMarker(new MarkerOptions().position(point).title("Drop Off")
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
                                     } catch (NullPointerException npe) {
                                         npe.printStackTrace();
                                     }
@@ -1256,7 +1075,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             @Override
             public void onClick(View v) {
                 if (isHomeLocation) {
-                    setMarker(homeLocation);
+                    setDropOffMarker(homeLocation);
                     dialog.dismiss();
                 } else {
                     // Toast.makeText(Step2Activity.this, "You have not set Home location", Toast.LENGTH_SHORT).show();
@@ -1270,7 +1089,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             @Override
             public void onClick(View v) {
                 if (isWorkLocation) {
-                    setMarker(workLocation);
+                    setDropOffMarker(workLocation);
                     dialog.dismiss();
                 } else {
                     // Toast.makeText(Step2Activity.this, "You have not set Work location", Toast.LENGTH_SHORT).show();
@@ -1303,6 +1122,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
+        stopTimer();
         super.onStop();
     }
 
@@ -1390,7 +1210,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
             //the include method will calculate the min and max bound.
             builder.include(pickupMarker.getPosition());
-            builder.include(marker.getPosition());
+            builder.include(dropOffMarker.getPosition());
 
             LatLngBounds bounds = builder.build();
 
@@ -1407,56 +1227,47 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
 
-    private void initViews(View rootView) {
-
-
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        //todo пока коментим
-        //rvSubType = rootView.findViewById(R.id.rvSubType);
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        carTypelayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        rvSubType.setLayoutManager(carTypelayoutManager);
-        rvSubType.setHasFixedSize(true);
-        mAutoCompleteView = rootView.findViewById(R.id.autocomplete_places);
-        imgLocation = rootView.findViewById(R.id.imgLocation);
-        //todo пока коментим
-//        imgPrev = rootView.findViewById(R.id.imgPrev);
-//        imgNext = rootView.findViewById(R.id.imgNext);
-//        imgSubPrev = rootView.findViewById(R.id.imgSubPrev);
-//        imgSubNext = rootView.findViewById(R.id.imgSubNext);
-//        subCarLayout = rootView.findViewById(R.id.subCarLayout);
-//        carLayout = rootView.findViewById(R.id.carLayout);
-
-        try {
-            carLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            subCarLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            subCarLayout.getLayoutTransition().setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-//        setUpMap();
-    }
-
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//        Log.e("HomeFragment", "onConnectionFailed: ConnectionResult.getErrorCode() = "
-//                + connectionResult.getErrorCode());
+//    private void initViews(View rootView) {
 //
-//        Toast.makeText(getContext(),
-//                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-//                Toast.LENGTH_SHORT).show();
+//
+//        recyclerView = rootView.findViewById(R.id.recyclerView);
+//        //todo пока коментим
+//        //rvSubType = rootView.findViewById(R.id.rvSubType);
+//        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+//        carTypelayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+//        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setHasFixedSize(true);
+//        rvSubType.setLayoutManager(carTypelayoutManager);
+//        rvSubType.setHasFixedSize(true);
+//        mAutoCompleteView = rootView.findViewById(R.id.autocomplete_places);
+//        imgLocation = rootView.findViewById(R.id.imgLocation);
+//        //todo пока коментим
+////        imgPrev = rootView.findViewById(R.id.imgPrev);
+////        imgNext = rootView.findViewById(R.id.imgNext);
+////        imgSubPrev = rootView.findViewById(R.id.imgSubPrev);
+////        imgSubNext = rootView.findViewById(R.id.imgSubNext);
+////        subCarLayout = rootView.findViewById(R.id.subCarLayout);
+////        carLayout = rootView.findViewById(R.id.carLayout);
+//
+//        try {
+//            carLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            subCarLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            subCarLayout.getLayoutTransition().setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, 0);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+////        setUpMap();
 //    }
+
 
     @Override
     public void onDestroy() {
@@ -1547,28 +1358,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //        });
 //    }
 
-    public void getCarTypes() {
-        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.usergetcartype;
-        ArrayList<String> params = new ArrayList<>();
-        ArrayList<String> values = new ArrayList<>();
-        new ParseJSON(getActivity(), url, params, values, CarTypePOJO.class, new ParseJSON.OnResultListner() {
-            @Override
-            public void onResult(boolean status, Object obj) {
-                if (status) {
-                    CarTypePOJO resultObj = (CarTypePOJO) obj;
-                    if (resultObj.isStatus()) {
-                        arrayList.addAll(resultObj.getCars());
-                    }
-                    adapter.notifyDataSetChanged();
 
-                } else {
-                    Toast.makeText(getActivity(), (String) obj, Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-    }
 
 //    public void getUserLocation() {
 //        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.usergetlocation;
@@ -1674,32 +1464,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     }
 
-    private void getSubCarType(String carTypeId) {
-        caryTypeList.clear();
-        //subCarTypeAdapter.notifyDataSetChanged();
-        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.getsubcartypes;
-        ArrayList<String> params = new ArrayList<>();
-        params.add("carTypeId");
-        ArrayList<String> values = new ArrayList<>();
-        values.add(carTypeId);
-        new ParseJSON(getActivity(), url, params, values, SubCarTypePOJO.class, new ParseJSON.OnResultListner() {
-            @Override
-            public void onResult(boolean status, Object obj) {
-                if (status) {
-                    SubCarTypePOJO resultObj = (SubCarTypePOJO) obj;
-                    caryTypeList.addAll(resultObj.getSubCarType());
-                    subCarTypeAdapter.notifyDataSetChanged();
-                    subCarTypeAdapter.resetSelection();
-                    subCarLayout.setVisibility(View.VISIBLE);
 
-                } else {
-                    Toast.makeText(getActivity(), (String) obj, Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-    }
 
 //    private void showLocationDialog() {
 //        dialog = new Dialog(getActivity()
@@ -1822,7 +1587,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     @Override
     public void onLocationChanged(Location location) {
-        setMarker(new LatLng(location.getLatitude(), location.getLongitude()));
+        setPickupMarker(new LatLng(location.getLatitude(), location.getLongitude()), "PickUpLocation");
     }
 
     @Override

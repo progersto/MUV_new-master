@@ -3,9 +3,11 @@ package com.muvit.passenger.database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity
-public class Card {
+public class Card implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
@@ -28,6 +30,26 @@ public class Card {
         this.year = year;
         this.cvv = cvv;
     }
+
+    protected Card(Parcel in) {
+        id = in.readLong();
+        numberCard = in.readString();
+        month = in.readString();
+        year = in.readString();
+        cvv = in.readString();
+    }
+
+    public static final Creator<Card> CREATOR = new Creator<Card>() {
+        @Override
+        public Card createFromParcel(Parcel in) {
+            return new Card(in);
+        }
+
+        @Override
+        public Card[] newArray(int size) {
+            return new Card[size];
+        }
+    };
 
     public long getId() {
         return id;
@@ -67,5 +89,19 @@ public class Card {
 
     public void setCvv(String cvv) {
         this.cvv = cvv;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
+        parcel.writeString(numberCard);
+        parcel.writeString(month);
+        parcel.writeString(year);
+        parcel.writeString(cvv);
     }
 }

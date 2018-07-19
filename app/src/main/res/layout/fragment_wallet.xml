@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/navy_blue_fn"
 
     >
+
     <RelativeLayout
-        android:background="@color/dull_golden"
         android:id="@+id/toolbar_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/dull_golden">
+
         <ImageView
-            android:layout_centerVertical="true"
             android:id="@+id/back_btn"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/back_btn_yellow"
             android:tint="@color/white"
 
             />
+
         <TextView
-            android:layout_centerVertical="true"
-            android:text="Wallet"
-            android:layout_marginLeft="10dp"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:layout_toRightOf="@+id/back_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/back_btn"
+            android:text="Wallet"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
-    <ScrollView
-        android:layout_below="@+id/toolbar_wrapper"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_wrapper"
         android:background="@color/navy_blue_fn"
         android:fillViewport="true">
 
@@ -68,160 +69,157 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:background="@color/dull_golden"
-                        android:gravity="center_horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/dull_golden"
+                        android:gravity="center_horizontal"
 
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_marginTop="10dp"
-                            android:textColor="@color/yellow_light"
-                            android:textSize="20sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
                             android:text="BALANCE"
-                             />
-                        <TextView
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-
-                            android:paddingBottom="10dp"
-                            android:background="@drawable/bottom_border_yellow_golden_back"
                             android:textColor="@color/yellow_light"
-                            android:textSize="40sp"
+                            android:textSize="20sp" />
+
+                        <TextView
                             android:id="@+id/txtCurrentBal"
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"
+                            android:background="@drawable/bottom_border_yellow_golden_back"
+                            android:paddingBottom="10dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:text="₦0"
-                           />
+                            android:textColor="@color/yellow_light"
+                            android:textSize="40sp" />
 
                     </LinearLayout>
 
                     <TextView
-                        android:layout_marginTop="20dp"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cashless rides with MUV Wallet"
                         android:layout_gravity="center_horizontal"
-                        />
-
+                        android:layout_marginTop="20dp"
+                        android:text="Cashless rides with MUV Wallet"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
 
                     <EditText
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
                         android:id="@+id/rechargeEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="10dp"
                         android:background="@drawable/bottom_border_yellow"
                         android:hint="Recharge Amount"
+
                         android:inputType="number"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:singleLine="true"
                         android:textColor="@color/yellow_light"
                         android:textColorHint="@color/grey"
-                        android:singleLine="true"
 
                         />
 
 
-
                     <LinearLayout
+                        android:id="@+id/amount_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="20dp"
                         android:orientation="horizontal"
-                        android:id="@+id/amount_wrapper"
-                        android:weightSum="3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:weightSum="3">
 
 
                         <LinearLayout
-                            android:paddingTop="20dp"
-                            android:paddingBottom="20dp"
-                            android:gravity="center"
+                            android:id="@+id/amt1000"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_bottom_yellow_no_back"
                             android:clickable="true"
                             android:focusable="true"
-                            android:background="@drawable/border_bottom_yellow_no_back"
+                            android:gravity="center"
                             android:orientation="horizontal"
-                            android:id="@+id/amt1000"
-                            android:weightSum="3"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content">
+                            android:paddingBottom="20dp"
+                            android:paddingTop="20dp"
+                            android:weightSum="3">
 
                             <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@+id/back_btn"
                                 android:clickable="false"
                                 android:focusable="false"
                                 android:text="N1000"
-                                android:layout_marginLeft="10dp"
-                                android:textSize="20sp"
                                 android:textColor="@color/yellow_light"
-                                android:layout_toRightOf="@+id/back_btn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:textSize="20sp" />
                         </LinearLayout>
 
 
                         <LinearLayout
-                            android:layout_marginRight="10dp"
+                            android:id="@+id/amt5000"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:paddingTop="20dp"
-                            android:paddingBottom="20dp"
-                            android:gravity="center"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_bottom_yellow_no_back"
                             android:clickable="true"
                             android:focusable="true"
-                            android:background="@drawable/border_bottom_yellow_no_back"
+                            android:gravity="center"
                             android:orientation="horizontal"
-                            android:id="@+id/amt5000"
-                            android:weightSum="3"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content">
+                            android:paddingBottom="20dp"
+                            android:paddingTop="20dp"
+                            android:weightSum="3">
 
                             <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@+id/back_btn"
                                 android:clickable="false"
                                 android:focusable="false"
                                 android:text="N5000"
-                                android:layout_marginLeft="10dp"
-                                android:textSize="20sp"
                                 android:textColor="@color/yellow_light"
-                                android:layout_toRightOf="@+id/back_btn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:textSize="20sp" />
                         </LinearLayout>
 
 
                         <LinearLayout
-                            android:paddingTop="20dp"
-                            android:paddingBottom="20dp"
-                            android:gravity="center"
+                            android:id="@+id/amt10000"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_bottom_yellow_no_back"
                             android:clickable="true"
                             android:focusable="true"
-                            android:background="@drawable/border_bottom_yellow_no_back"
+                            android:gravity="center"
                             android:orientation="horizontal"
-                            android:id="@+id/amt10000"
-                            android:weightSum="3"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content">
+                            android:paddingBottom="20dp"
+                            android:paddingTop="20dp"
+                            android:weightSum="3">
+
                             <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@+id/back_btn"
                                 android:clickable="false"
                                 android:focusable="false"
                                 android:text="N10000"
-                                android:layout_marginLeft="10dp"
-                                android:textSize="20sp"
                                 android:textColor="@color/yellow_light"
-                                android:layout_toRightOf="@+id/back_btn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:textSize="20sp" />
 
                         </LinearLayout>
 
@@ -230,25 +228,26 @@
 
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:layout_marginTop="20dp"
                         android:gravity="center"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:textSize="16dp"
                         android:text="@string/terms_conditoins_agree"
                         android:textColor="@color/white"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:textSize="16dp" />
+
                     <Button
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:textAllCaps="true"
-                        android:id="@+id/btnSubmit"
+                        android:id="@+id/btnAddMoney"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:layout_marginTop="20dp"
                         android:background="@color/yellow_light"
                         android:text="ADD MONEY"
+                        android:textAllCaps="true"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
 
@@ -291,20 +290,20 @@
                             android:id="@+id/txtDepositFunds"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="₦0"
                             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-                            tools:text="₦0"
-                            android:text="₦0" />
+                            tools:text="₦0" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/redeem_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -356,11 +355,11 @@
 
             <!--buttons -->
             <LinearLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btnDepositFund"

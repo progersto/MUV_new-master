@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -97,6 +98,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.koushikdutta.ion.Ion;
+import com.muvit.passenger.database.AppDatabase;
+import com.muvit.passenger.database.Card;
+import com.muvit.passenger.database.CardDao;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -110,6 +114,10 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class Step2Activity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
 
@@ -118,7 +126,8 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
     public ActionBarDrawerToggle toggle;
     FragmentManager fragmentManager;
     BroadcastReceiver mMessageReceiver;
-
+    private Disposable disposable;
+    private CardDao cardDao;
 
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
@@ -346,8 +355,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                                 drawerLayout.closeDrawers();
                                 break;
                             case R.id.payments:
-                                startActivity(new Intent(Step2Activity.this, PaymentsActivity.class));
-
+                                getListAllCards();
                                 break;
                             case R.id.wallet:
                                 txtTitle.setText(R.string.nav_wallet);
@@ -458,6 +466,32 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }//initNavigationDrawer
+
+
+    public void getListAllCards() {
+        AppDatabase db = ApplicationController.getInstance().getDatabase();
+        cardDao = db.cardDao();
+        disposable = cardDao.getListCards()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listAccounts -> {
+                    disposable.dispose();
+                    checkCard(listAccounts);
+                });
+    }//getListImageObj
+
+
+    private void checkCard(List<Card> listCards) {
+        if (listCards.size() > 0) {
+            // карта есть, смотрим детали карты
+            Intent intent = new Intent(Step2Activity.this,CardDetailsActivity.class);
+            intent.putExtra("card", listCards.get(0));
+            startActivity(intent);
+        } else {
+            // карты нет, открываем сообщение о ее отсутствии
+            startActivity(new Intent(Step2Activity.this, PaymentsActivity.class));
+        }//if
+    }//sowData
 
 
     public void updateHeader() {

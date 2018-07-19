@@ -11,6 +11,7 @@ android {
         versionCode 7
         versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -58,9 +59,11 @@ dependencies {
         transitive = true
     }
     implementation 'com.google.firebase:firebase-core:10.0.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.Flutterwave:rave-android:1.0.25'
+    implementation 'com.android.support:multidex:1.0.3'
 
     //ROOM and RxJava
     implementation 'android.arch.persistence.room:runtime:1.1.1'

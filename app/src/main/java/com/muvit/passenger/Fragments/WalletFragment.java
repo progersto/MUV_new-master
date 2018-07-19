@@ -8,14 +8,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.muvit.passenger.Activities.AddCardActivity;
 import com.muvit.passenger.Activities.DepositFundActivity;
 import com.muvit.passenger.Activities.RedeemHistoryActivity;
 import com.muvit.passenger.Activities.RedeemRequestActivity;
@@ -49,6 +53,8 @@ public class WalletFragment extends Fragment {
     private TextView txtCurrentBal, txtDepositFunds, txtRedeemRequest,txtRedeemHistory;
     private int WALLET_UPDATE_CODE = 555;
     ImageView back_btn;
+    private Button btnAddMoney;
+    private EditText rechargeEt;
 
 
     @Nullable
@@ -139,6 +145,22 @@ public class WalletFragment extends Fragment {
         txtDepositFunds = (TextView) rootView.findViewById(R.id.txtDepositFunds);
         txtRedeemRequest = (TextView) rootView.findViewById(R.id.txtRedeemRequest);
         txtRedeemHistory = (TextView) rootView.findViewById(R.id.txtRedeemHistory);
+        rechargeEt = rootView.findViewById(R.id.rechargeEt);
+        btnAddMoney = rootView.findViewById(R.id.btnAddMoney);
+        btnAddMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!rechargeEt.getText().toString().isEmpty()){
+                    Intent intent = new Intent(getContext(), DepositFundActivity.class);
+                    intent.putExtra("amount", rechargeEt.getText().toString());
+                    startActivity(intent);
+                }else {
+                    Toast toast = Toast.makeText(getContext(), "Enter recharge amount!", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            }
+        });
     }
 
     public void getWalletDetails() {

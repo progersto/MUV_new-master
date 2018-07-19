@@ -220,9 +220,12 @@ public class GeocoderHelper {
                                 } else {
                                     Log.e("FROM Third ELSE :", "ELSE");
                                 }
-//                                contex.runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
+                                contex.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        txtSourceLocation.setText(sb.toString());
+
+                                    }
 //                                        mAutoCompleteView.setFocusable(false);
 //                                        mAutoCompleteView.setFocusableInTouchMode(false);
 //                                        mAutoCompleteView.setText(sb.toString());
@@ -232,8 +235,8 @@ public class GeocoderHelper {
 //                                        mAutoCompleteView.setText(sb.toString());
 //                                        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
 //                                    }
-//                                });
-                                txtSourceLocation.setText(Address);
+                                });
+//                                txtSourceLocation.setText(Address);
                             } else {
                                 Log.e("FROM second ELSE :", "ELSE");
                             }

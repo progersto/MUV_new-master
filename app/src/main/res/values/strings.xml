@@ -181,4 +181,13 @@
     <string name="information">It is a long estastandardblished fact that a reader will be  distracted by the readable content of a page  when looking at its layout. The point of using  Lorem Ipsum is that it has a more-or-less  normal distribution of letters, as opposed to  using \'Content here, content here\', making  it look like readable English.  Many desktop publishing packages and web  page editors now use Lorem Ipsum as their  default model text, and a search for  \'lorem ipsum\' will uncover many web sites still  in their infancy.  Various versions have evolved over the years,  sometimes by accident, sometimes on purpose  (injected humour and the like).</string>
     <string name="navigation_drawer_close">drawer close</string>
     <string name="navigation_drawer_open">drawer open</string>
+
+    <string name="rave_payment_public_key">dFLWPUBK-e8254804afbc4943e5a6adc5437dd508-X</string>
+    <string name="rave_payment_public_key_TEST">FLWPUBK-84e0877e4362bb0e63d3903000792b1f-X</string>
+    <string name="rave_payment_secret_key">FLWSECK-aaea32bb8bb11a3514abb5385f2662f7-X</string>
+    <string name="rave_payment_secret_key_TEST">FLWSECK-ab1cd646359c87753a5bb2eea12f40e3-X</string>
+    <string name="rave_payment_country">NG</string>
+    <string name="rave_payment_currency">NGN</string>
+
+
 </resources>

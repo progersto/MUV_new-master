@@ -1,6 +1,7 @@
 package com.muvit.passenger.database;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
@@ -21,6 +22,9 @@ public interface CardDao {
 
     @Update
     void update(Card cardObj);
+
+    @Delete
+    void delete(Card... cards);
 
     // update bet
 //    @Query("UPDATE Card SET bet = :bet WHERE id =:id")
