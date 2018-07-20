@@ -160,6 +160,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView mAutoCompleteView;
     private Marker pickupMarker;
+
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
@@ -203,6 +204,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step2);
         initViews();
+        initInternetReceiver();
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(getListener());
         //getDefaultPaymentMethod();
@@ -216,10 +218,7 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
 //
 //        mGoogleApiClient.connect();
 //
-////        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
-//        mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
-//                mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
-//        mAutoCompleteView.setAdapter(mAdapter);
+
 
         /*imgWallet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1153,10 +1152,142 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+
+    private void initInternetReceiver(){
+        mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (new ConnectionCheck().isNetworkConnected(context)) {
+                    android.util.Log.e("HomeActivity", "connected");
+                    if(!ApplicationController.isOnline) {
+                        if (PrefsUtil.isNoInternetShowing) {
+                            if (PrefsUtil.dialogNoInternet != null) {
+                                PrefsUtil.dialogNoInternet.dismiss();
+                                PrefsUtil.isNoInternetShowing = false;
+                            }
+                        }
+                        final Dialog d = new Dialog(context, android.R.style.Theme_Light_NoTitleBar);
+                        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        d.setContentView(R.layout.dialog_connected);
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        lp.copyFrom(d.getWindow().getAttributes());
+                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+                        d.getWindow().setAttributes(lp);
+                        TextView txtRetry = (TextView) d.findViewById(R.id.txtRetry);
+                        txtRetry.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PrefsUtil.isInternetConnectedShowing = false;
+                                d.dismiss();
+                            }
+                        });
+                        d.setCancelable(true);
+                        d.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                PrefsUtil.isInternetConnectedShowing = false;
+                            }
+                        });
+                        PrefsUtil.isInternetConnectedShowing = true;
+                        PrefsUtil.dialogInternetConnected = d;
+                        d.show();
+                        ApplicationController.isOnline = true;
+                    }
+                    EventBus.getDefault().post(new MessageEvent("connection","connected"));
+                } else {
+                    //new ConnectionCheck().showDialogWithMessage(context, getString(R.string.sync_data_message)).show();
+                    android.util.Log.e("Step2Activity", "disconnected");
+                    if(ApplicationController.isOnline) {
+                        if (PrefsUtil.isInternetConnectedShowing) {
+                            if (PrefsUtil.dialogInternetConnected != null) {
+                                PrefsUtil.dialogInternetConnected.dismiss();
+                                PrefsUtil.isInternetConnectedShowing = false;
+                            }
+                        }
+                        final Dialog d = new Dialog(context, android.R.style.Theme_Light_NoTitleBar);
+                        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        d.setContentView(R.layout.dialog_no_internet);
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        lp.copyFrom(d.getWindow().getAttributes());
+                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+                        d.getWindow().setAttributes(lp);
+                        TextView txtRetry = (TextView) d.findViewById(R.id.txtRetry);
+                        txtRetry.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PrefsUtil.isNoInternetShowing = false;
+                                d.dismiss();
+                            }
+                        });
+                        d.setCancelable(true);
+                        d.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                PrefsUtil.isNoInternetShowing = false;
+                            }
+                        });
+                        PrefsUtil.isNoInternetShowing = true;
+                        PrefsUtil.dialogNoInternet = d;
+                        d.show();
+                        ApplicationController.isOnline = false;
+                    }
+                    EventBus.getDefault().post(new MessageEvent("connection","disconnected"));
+                }
+            }
+        };
+    }
+
     @Override
     public void onBackPressed() {
-        if (layoutOverlay.getVisibility() != View.VISIBLE) {
-            super.onBackPressed();
+//        if (layoutOverlay.getVisibility() != View.VISIBLE) {
+//            super.onBackPressed();
+//        }
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }else {
+
+            if ((getSupportFragmentManager().getBackStackEntryCount() - 1) >= 0) {
+                getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        try {
+                            //Fragment fragment = getSupportFragmentManager().getFragments().get(getSupportFragmentManager().getBackStackEntryCount() - 1);
+                            FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1);
+                            String tag = backEntry.getName();
+                            txtTitle.setText(tag);
+                            // fragment.onResume();
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+            }
+            if (getSupportFragmentManager().getBackStackEntryCount() - 1 == 0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setMessage("Do you really want to Exit?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //if user pressed "yes", then he is allowed to exit from application
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //if user select "No", just cancel this dialog and continue with app
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                getSupportFragmentManager().popBackStack();
+
+            }
         }
     }
 
@@ -1171,6 +1302,31 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(PrefsUtil.dialogStartGPS != null){
+            PrefsUtil.dialogStartGPS.dismiss();
+            PrefsUtil.dialogStartGPS = null;
+            PrefsUtil.isStartGPSShowing = false;
+        }
+        try {
+            updateHeader();
+            InputMethodManager mImm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mImm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            registerReceiver(mMessageReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

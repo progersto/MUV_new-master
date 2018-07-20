@@ -126,7 +126,6 @@ public class HomeActivity extends AppCompatActivity {
         {
         };
 
-
         navigationView = findViewById(R.id.navigation_view);
 
         mMessageReceiver = new BroadcastReceiver() {
@@ -516,10 +515,7 @@ public class HomeActivity extends AppCompatActivity {
             e.printStackTrace();
 
         }
-
     }
-
-
 
 
     @Override

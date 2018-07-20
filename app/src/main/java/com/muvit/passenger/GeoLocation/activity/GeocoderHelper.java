@@ -184,9 +184,8 @@ public class GeocoderHelper {
     }
 
 
-
     @SuppressLint("StaticFieldLeak")
-    public void fetchAddress1(final Activity contex, final Location location, final TextView txtSourceLocation) {
+    public void fetchAddress1(final Activity contex, final Location location, final AutoCompleteTextView txtSourceLocation) {
         if (running)
             return;
 
@@ -224,6 +223,7 @@ public class GeocoderHelper {
                                     @Override
                                     public void run() {
                                         txtSourceLocation.setText(sb.toString());
+                                        txtSourceLocation.dismissDropDown();
 
                                     }
 //                                        mAutoCompleteView.setFocusable(false);
@@ -249,11 +249,9 @@ public class GeocoderHelper {
                     }
                 }
 
-                if (Address != null) // i.e., Geocoder succeed
-                {
+                if (Address != null){ // i.e., Geocoder succeed{
                     return Address;
-                } else // i.e., Geocoder failed
-                {
+                } else {// i.e., Geocoder failed
                     return fetchAddressUsingGoogleMap();
                 }
             }
@@ -338,7 +336,6 @@ public class GeocoderHelper {
             ;
         }.execute();
     }
-
 
 
     private String readStream(InputStream in) {

@@ -96,6 +96,36 @@ public class WalletFragment extends Fragment {
     }
 
 
+    public void getWalletDetails() {
+        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.getuserwalletdetails;
+        ArrayList<String> params = new ArrayList<>();
+        params.add("userId");
+        ArrayList<String> values = new ArrayList<>();
+        values.add(String.valueOf(PrefsUtil.with(getActivity()).readInt("uId")));
+        new ParseJSON(getActivity(), url, params, values, WalletDetailPOJO.class, new ParseJSON.OnResultListner() {
+            @Override
+            public void onResult(boolean status, Object obj) {
+                if (status) {
+                    WalletDetailPOJO resultObj = (WalletDetailPOJO) obj;
+                    if (!resultObj.getWallet().get(0).getCurrenctBalance().isEmpty()) {
+                        String totalWallet = getString(R.string.currencySign)+resultObj.getWallet().get(0).getCurrenctBalance();
+                        PrefsUtil.with(getContext()).write("total_wallet", totalWallet);
+                        txtCurrentBal.setText(totalWallet);
+                    }
+                    if (!resultObj.getWallet().get(0).getDepositFund().isEmpty()) {
+                        txtDepositFunds.setText(getString(R.string.currencySign)+resultObj.getWallet().get(0).getDepositFund());
+                    }
+                    if (!resultObj.getWallet().get(0).getRedeemRequest().isEmpty()) {
+                        txtRedeemRequest.setText(getString(R.string.currencySign)+resultObj.getWallet().get(0).getRedeemRequest());
+                    }
+
+                } else {
+                    Toast.makeText(getActivity(), (String) obj, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     public void getOfflineWalletDetails() {
         try {
             File f = new File(getActivity().getFilesDir().getPath() + "/" + "offline.json");
@@ -106,6 +136,7 @@ public class WalletFragment extends Fragment {
             is.read(buffer);
             is.close();
             String s = new String(buffer);
+            Log.d("TAG", "" + s);
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.setDateFormat("M/d/yy hh:mm a"); //Format of our JSON dates
             Gson gson = gsonBuilder.create();
@@ -121,13 +152,9 @@ public class WalletFragment extends Fragment {
             if (!resultObj.getWallet().get(0).getRedeemRequest().isEmpty()) {
                 txtRedeemRequest.setText(getString(R.string.currencySign)+resultObj.getWallet().get(0).getRedeemRequest());
             }
-
-
-
         }catch(Exception e){
-            Log.e("TAG", "Error in Reading: " + e.getLocalizedMessage());
+            Log.e("TAG", "Error in Reading: ",e);
         }
-
     }
 
     private void initViews(View rootView) {
@@ -158,34 +185,6 @@ public class WalletFragment extends Fragment {
                     Toast toast = Toast.makeText(getContext(), "Enter recharge amount!", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
-                }
-            }
-        });
-    }
-
-    public void getWalletDetails() {
-        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.getuserwalletdetails;
-        ArrayList<String> params = new ArrayList<>();
-        params.add("userId");
-        ArrayList<String> values = new ArrayList<>();
-        values.add(String.valueOf(PrefsUtil.with(getActivity()).readInt("uId")));
-        new ParseJSON(getActivity(), url, params, values, WalletDetailPOJO.class, new ParseJSON.OnResultListner() {
-            @Override
-            public void onResult(boolean status, Object obj) {
-                if (status) {
-                    WalletDetailPOJO resultObj = (WalletDetailPOJO) obj;
-                    if (!resultObj.getWallet().get(0).getCurrenctBalance().isEmpty()) {
-                        txtCurrentBal.setText(getString(R.string.currencySign)+resultObj.getWallet().get(0).getCurrenctBalance());
-                    }
-                    if (!resultObj.getWallet().get(0).getDepositFund().isEmpty()) {
-                        txtDepositFunds.setText(getString(R.string.currencySign)+resultObj.getWallet().get(0).getDepositFund());
-                    }
-                    if (!resultObj.getWallet().get(0).getRedeemRequest().isEmpty()) {
-                        txtRedeemRequest.setText(getString(R.string.currencySign)+resultObj.getWallet().get(0).getRedeemRequest());
-                    }
-
-                } else {
-                    Toast.makeText(getActivity(), (String) obj, Toast.LENGTH_SHORT).show();
                 }
             }
         });
