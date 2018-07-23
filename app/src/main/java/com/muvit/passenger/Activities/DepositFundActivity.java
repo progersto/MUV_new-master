@@ -180,8 +180,8 @@ public class DepositFundActivity extends AppCompatActivity {
                 .setCountry(getString(R.string.rave_payment_country))
                 .setCurrency(getString(R.string.rave_payment_currency))
                 .setEmail(PrefsUtil.with(DepositFundActivity.this).readString("email"))
-                .setPublicKey(getString(R.string.rave_payment_public_key_TEST))
-                .setSecretKey(getString(R.string.rave_payment_secret_key_TEST))
+                .setPublicKey(getString(R.string.rave_payment_public_key))
+                .setSecretKey(getString(R.string.rave_payment_secret_key))
                 .setTxRef(uniqueRef)//уникальная ссылка
                 .acceptAccountPayments(false)
                 .acceptCardPayments(true)

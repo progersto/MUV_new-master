@@ -1,7 +1,6 @@
 package com.muvit.passenger.Fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +15,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -28,7 +26,6 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -53,6 +50,7 @@ import com.muvit.passenger.Activities.DepositFundActivity;
 import com.muvit.passenger.Activities.HomeActivity;
 import com.muvit.passenger.Application.ApplicationController;
 import com.muvit.passenger.AsyncTask.ParseJSON;
+import com.muvit.passenger.AsyncTask.SetUpAdress;
 import com.muvit.passenger.GeoLocation.activity.GeocoderHelper;
 import com.muvit.passenger.GeoLocation.adapter.PlaceAutocompleteAdapter;
 import com.muvit.passenger.GeoLocation.logger.Log;
@@ -107,8 +105,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by nct119 on 28/10/16.
  */
 
-public class HomeFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
-         {
+public class HomeFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
     //    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
 //            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
@@ -123,7 +120,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     FareEstimateItem fareSummaryItem;
     String defaultPaymentMethod = "w";
     TextSwitcher txtSwitcherMessage;
-    LatLng homeLocation, workLocation;
+    LatLng homeLocation, workLocation, pickUpPoint;
     boolean isHomeLocation = false, isWorkLocation = false;
     Dialog dialog;
     private Toolbar toolbar;
@@ -157,13 +154,31 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private CardDao cardDao;
     private TimerTask mTt1;
     private boolean flag_location;
+    private SetUpAdress setUpAdressOnMap = new SetUpAdress() {
+        @Override
+        public void setupAdress(String adress) {
+            txtSource.setText(adress);
+            txtSource.dismissDropDown();
+
+            //remove previously placed Marker
+            if (pickupMarker != null) {
+                pickupMarker.remove();
+            }
+
+            pickupMarker = googleMap.addMarker(new MarkerOptions().position(pickUpPoint).title(adress)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
+            pickupMarker.showInfoWindow();
+            moveToCurrentLocation(pickUpPoint);
+        }
+    };
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             //        setPickupMarker(new LatLng(location.getLatitude(), location.getLongitude()), mAutoCompleteView.getText().toString());
 //            if (flag_location){
-                setPickupMarker(new LatLng(location.getLatitude(), location.getLongitude()), "onLocationChanged");
-                locationManager.removeUpdates(this);
+            pickUpPoint = new LatLng(location.getLatitude(), location.getLongitude());
+            setPickupMarker(pickUpPoint, "onLocationChanged");
+            locationManager.removeUpdates(this);
 //                flag_location = false;
 //            }
         }
@@ -233,7 +248,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 return;
             } else {
 //                setPickupMarker(places.get(0).getLatLng(), mAutoCompleteView.getText().toString());
-                setPickupMarker(places.get(0).getLatLng(), "Callback");
+                pickUpPoint = places.get(0).getLatLng();
+                setPickupMarker(pickUpPoint, "Callback");
             }
             places.release();
         }
@@ -721,8 +737,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
                     } else {
                         selectedLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        setPickupMarker(selectedLatLng, "setUpMap");
-                        moveToCurrentLocation1(selectedLatLng);
+                        pickUpPoint = selectedLatLng;
+                        setPickupMarker(pickUpPoint, "setUpMap");
+                        moveToCurrentLocation1(pickUpPoint);
                         try {
                             fromLat = new LatLng(selectedLatLng.latitude, selectedLatLng.longitude);
                             carTypeId = String.valueOf(3);
@@ -760,18 +777,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             temp.setLatitude(point.latitude);
             temp.setLongitude(point.longitude);
             GeocoderHelper gHelper = new GeocoderHelper();
-            gHelper.fetchAddress1(getActivity(), temp, txtSource);//вписываем адрес
-
-
-            //remove previously placed Marker
-            if (pickupMarker != null) {
-                pickupMarker.remove();
-            }
-
-            pickupMarker = googleMap.addMarker(new MarkerOptions().position(point).title(location)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
-            pickupMarker.showInfoWindow();
-            moveToCurrentLocation(point);
+            gHelper.fetchAddress1(getActivity(), temp, txtSource, setUpAdressOnMap);//вписываем адрес
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -784,7 +790,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             temp.setLatitude(point.latitude);
             temp.setLongitude(point.longitude);
             GeocoderHelper gHelper = new GeocoderHelper();
-            gHelper.fetchAddress1(getActivity(), temp, mAutoCompleteView);//вписываем адрес
+            gHelper.fetchAddress1(getActivity(), temp, mAutoCompleteView, setUpAdressOnMap);//вписываем адрес
 
             //remove previously placed Marker
             if (dropOffMarker != null) {

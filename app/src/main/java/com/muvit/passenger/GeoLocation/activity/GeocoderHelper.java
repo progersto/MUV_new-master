@@ -13,7 +13,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
+
+import com.muvit.passenger.AsyncTask.SetUpAdress;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -176,16 +177,16 @@ public class GeocoderHelper {
                 if (Address != null) {
                     // Do something with cityName
                     Log.i("GeocoderHelper", Address);
+
                 }
             }
-
-            ;
         }.execute();
     }
 
 
     @SuppressLint("StaticFieldLeak")
-    public void fetchAddress1(final Activity contex, final Location location, final AutoCompleteTextView txtSourceLocation) {
+    public void fetchAddress1(final Activity contex, final Location location, final AutoCompleteTextView txtSourceLocation, SetUpAdress setUpAdress) {
+
         if (running)
             return;
 
@@ -325,15 +326,14 @@ public class GeocoderHelper {
                 return null;
             }
 
-            protected void onPostExecute(String Address) {
+            protected void onPostExecute(String address) {
                 running = false;
-                if (Address != null) {
+                if (address != null) {
                     // Do something with cityName
-                    Log.i("GeocoderHelper", Address);
+                    Log.i("GeocoderHelper", address);
+                    setUpAdress.setupAdress(address);
                 }
             }
-
-            ;
         }.execute();
     }
 
