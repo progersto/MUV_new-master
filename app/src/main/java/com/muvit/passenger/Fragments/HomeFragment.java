@@ -2,6 +2,7 @@ package com.muvit.passenger.Fragments;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -111,21 +112,21 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
     protected GoogleApiClient mGoogleApiClient;
     Dialog promoDialog, fareDialog, paymentMethodDialog;
+    private ProgressDialog prd;
     RelativeLayout cancelBtn, okBtn, cancelFare, btnCash, btnWallet, btnCard;
     TextView fareView, startLocation, endLocation, car_name;
 
-    LatLng fromLat;
     String carTypeId = "3";
     String subCarTypeId = "2";
     FareEstimateItem fareSummaryItem;
     String defaultPaymentMethod = "w";
     TextSwitcher txtSwitcherMessage;
-    LatLng homeLocation, workLocation, pickUpPoint;
+    LatLng homeLocation, workLocation, pickUpPoint, dropOffPoint;
     boolean isHomeLocation = false, isWorkLocation = false;
     Dialog dialog;
     private Toolbar toolbar;
     private TextView txtTitle;
-    private ImageView imgWallet, dashLine, imgLocation, close_anim;
+    private ImageView imgWallet, dashLine, imgLocation, imgNav, close_anim;
     LinearLayout imgCash_btn, txtFareEstimate;
     RelativeLayout promo_btn;
     private Button btnBooknRide;
@@ -153,8 +154,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private Disposable disposable;
     private CardDao cardDao;
     private TimerTask mTt1;
-    private boolean flag_location;
-    private SetUpAdress setUpAdressOnMap = new SetUpAdress() {
+    private SetUpAdress setUpAdressPickupMarker = new SetUpAdress() {
         @Override
         public void setupAdress(String adress) {
             txtSource.setText(adress);
@@ -168,19 +168,42 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             pickupMarker = googleMap.addMarker(new MarkerOptions().position(pickUpPoint).title(adress)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
             pickupMarker.showInfoWindow();
-            moveToCurrentLocation(pickUpPoint);
+            if (dropOffMarker != null) {
+                moveToCurrentLocationRoute();
+            } else
+                moveToCurrentLocation(pickUpPoint);
         }
     };
+
+    private SetUpAdress setUpAdressDropOfMarker = new SetUpAdress() {
+        @Override
+        public void setupAdress(String adress) {
+            mAutoCompleteView.setText(adress);
+            mAutoCompleteView.dismissDropDown();
+
+            //remove previously placed Marker
+            if (dropOffMarker != null) {
+                dropOffMarker.remove();
+            }
+
+            //place marker where user just clicked
+            dropOffMarker = googleMap.addMarker(new MarkerOptions().position(dropOffPoint).title(adress)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
+            if (pickupMarker != null) {
+                moveToCurrentLocationRoute();
+            } else
+                moveToCurrentLocation(dropOffPoint);
+        }
+    };
+
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            //        setPickupMarker(new LatLng(location.getLatitude(), location.getLongitude()), mAutoCompleteView.getText().toString());
-//            if (flag_location){
-            pickUpPoint = new LatLng(location.getLatitude(), location.getLongitude());
-            setPickupMarker(pickUpPoint, "onLocationChanged");
-            locationManager.removeUpdates(this);
-//                flag_location = false;
-//            }
+                pickUpPoint = new LatLng(location.getLatitude(), location.getLongitude());
+                setPickupMarker(pickUpPoint, "onLocationChanged");
+                locationManager.removeUpdates(this);
+                if (prd != null)
+                    prd.dismiss();
         }
 
         @Override
@@ -233,7 +256,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 places.release();
                 return;
             } else {
-                setDropOffMarker(places.get(0).getLatLng());
+                dropOffPoint = places.get(0).getLatLng();
+                setDropOffMarker(dropOffPoint);
             }
             places.release();
         }
@@ -247,20 +271,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 places.release();
                 return;
             } else {
-//                setPickupMarker(places.get(0).getLatLng(), mAutoCompleteView.getText().toString());
                 pickUpPoint = places.get(0).getLatLng();
                 setPickupMarker(pickUpPoint, "Callback");
             }
             places.release();
         }
     };
-//    @SuppressLint("HandlerLeak")
-//    Handler handler = new Handler() {
-//        public void handleMessage(Message msg) {
-//
-//            ((AutoCompleteTextView) msg.obj).setAdapter(mAdapter);
-//        }
-//    };
 
 
     @Nullable
@@ -273,7 +289,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         mGoogleApiClient.connect();
 
         startTimer();
-        flag_location = true;
+
         locationManager = (LocationManager) getActivity()
                 .getSystemService(Context.LOCATION_SERVICE);
 
@@ -340,6 +356,24 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 getUserLocation();
             }
         });
+        imgNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prd = new ProgressDialog(getContext(),R.style.DialogTheme);
+                prd.setTitle("Loading...");
+                prd.setMessage("Please Wait While Loading");
+                prd.setCancelable(false);
+                prd.show();
+
+                locationManager = (LocationManager) getActivity()
+                        .getSystemService(Context.LOCATION_SERVICE);
+
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener);
+            }
+        });
 
         return rootView;
     }//onCreateView
@@ -375,6 +409,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         txtSource.setMovementMethod(new ScrollingMovementMethod());
         dashLine = rootView.findViewById(R.id.dashLine);
         imgLocation = rootView.findViewById(R.id.imgLocation);
+        imgNav = rootView.findViewById(R.id.imgNav);
         layoutOverlay = rootView.findViewById(R.id.layoutOverlayAnim);
         close_anim = (ImageView) rootView.findViewById(R.id.close_anim);
         close_anim.setOnClickListener(new View.OnClickListener() {
@@ -624,8 +659,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         Ion.with(car_img_fare)
                 .error(R.drawable.rides)
                 .load(WebServiceUrl.carUrl + fareSummaryItem.getCarTypeImage());
-        fareView.setText(fareSummaryItem.getFareDistanceCharges());
-        txtFareEstimate.setClickable(true);
+        fareView.setText(fareSummaryItem.getFinalEstimatedTotal());
         fareDialog.show();
     }//popupEstimateNew
 
@@ -716,6 +750,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                         @Override
                         public void onMapClick(LatLng point) {
                             if (!mAutoCompleteView.isPopupShowing()) {
+                                dropOffPoint = point;
                                 setDropOffMarker(point);
                             }
                             KeyboardUtils.hideSoftKeyboard(getActivity());
@@ -740,14 +775,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                         pickUpPoint = selectedLatLng;
                         setPickupMarker(pickUpPoint, "setUpMap");
                         moveToCurrentLocation1(pickUpPoint);
-                        try {
-                            fromLat = new LatLng(selectedLatLng.latitude, selectedLatLng.longitude);
-                            carTypeId = String.valueOf(3);
-                            subCarTypeId = String.valueOf(2);
-                        } catch (Exception e) {
-                            fromLat = new LatLng(0.0, 0.0);
-                            e.printStackTrace();
-                        }
+
+                        carTypeId = String.valueOf(3);
+                        subCarTypeId = String.valueOf(2);
                     }
                     /*Geocoder geocoder = new Geocoder(getActivity());
                     List<Address> addresses  = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
@@ -777,7 +807,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             temp.setLatitude(point.latitude);
             temp.setLongitude(point.longitude);
             GeocoderHelper gHelper = new GeocoderHelper();
-            gHelper.fetchAddress1(getActivity(), temp, txtSource, setUpAdressOnMap);//вписываем адрес
+            gHelper.fetchAddress1(getActivity(), temp, setUpAdressPickupMarker);//вписываем адрес
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -790,21 +820,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             temp.setLatitude(point.latitude);
             temp.setLongitude(point.longitude);
             GeocoderHelper gHelper = new GeocoderHelper();
-            gHelper.fetchAddress1(getActivity(), temp, mAutoCompleteView, setUpAdressOnMap);//вписываем адрес
-
-            //remove previously placed Marker
-            if (dropOffMarker != null) {
-                dropOffMarker.remove();
-            }
-
-            //place marker where user just clicked
-            try {
-                dropOffMarker = googleMap.addMarker(new MarkerOptions().position(point).title("Drop Off")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_off_marker)));
-            } catch (NullPointerException npe) {
-                npe.printStackTrace();
-            }
-            moveToCurrentLocation(selectedLatLng);
+            gHelper.fetchAddress1(getActivity(), temp, setUpAdressDropOfMarker);//вписываем адрес
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -831,8 +847,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         ArrayList<String> values = new ArrayList<>();
         values.add(carTypeId);
         values.add(subCarTypeId);
-        values.add(String.valueOf(fromLat.latitude));
-        values.add(String.valueOf(fromLat.longitude));
+        values.add(String.valueOf(pickUpPoint.latitude));
+        values.add(String.valueOf(pickUpPoint.longitude));
         values.add(String.valueOf(selectedLatLng.latitude));
         values.add(String.valueOf(selectedLatLng.longitude));
         new ParseJSON(getContext(), url, params, values, FareEstimatePOJO.class, new ParseJSON.OnResultListner() {
@@ -859,6 +875,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 }
             }
         });
+        txtFareEstimate.setClickable(true);
     }
 
     public void confirmRide() {
@@ -888,8 +905,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         final ArrayList<String> values = new ArrayList<>();
         values.add(carTypeId);
         values.add(String.valueOf(PrefsUtil.with(getContext()).readInt("uId")));
-        values.add(String.valueOf(fromLat.latitude));
-        values.add(String.valueOf(fromLat.longitude));
+        values.add(String.valueOf(pickUpPoint.latitude));
+        values.add(String.valueOf(pickUpPoint.longitude));
         values.add(fareSummaryItem.getPickUpLocation());
         values.add(String.valueOf(selectedLatLng.latitude));
         values.add(String.valueOf(selectedLatLng.longitude));
@@ -1030,8 +1047,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 } else {
                     Toast.makeText(getContext(), (String) obj, Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
     }
@@ -1070,13 +1085,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             @Override
             public void onClick(View v) {
                 if (isHomeLocation) {
+                    dropOffPoint = homeLocation;
                     setDropOffMarker(homeLocation);
                     dialog.dismiss();
                 } else {
                     // Toast.makeText(Step2Activity.this, "You have not set Home location", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -1084,6 +1098,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             @Override
             public void onClick(View v) {
                 if (isWorkLocation) {
+                    dropOffPoint = workLocation;
                     setDropOffMarker(workLocation);
                     dialog.dismiss();
                 } else {
@@ -1199,7 +1214,16 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         }
     }
 
-    private void moveToCurrentLocation() {
+    private void moveToCurrentLocation(LatLng currentLocation) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
+//         Zoom in, animating the camera.
+        googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+//         Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+    }
+
+    private void moveToCurrentLocationRoute() {
         try {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -1452,17 +1476,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //        Thread t = new Thread(newthread);
 //        t.start();
 //    }
-
-    private void moveToCurrentLocation(LatLng currentLocation) {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
-        //googleMap.animateCamera(CameraUpdateFactory.zoomTo(18),2000,null);
-        // Zoom in, animating the camera.
-        //googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        //googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-
-
-    }
 
 
 //    private void showLocationDialog() {

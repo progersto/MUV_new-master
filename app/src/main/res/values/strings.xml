@@ -182,7 +182,7 @@
     <string name="navigation_drawer_close">drawer close</string>
     <string name="navigation_drawer_open">drawer open</string>
 
-    <string name="rave_payment_public_key">dFLWPUBK-e8254804afbc4943e5a6adc5437dd508-X</string>
+    <string name="rave_payment_public_key">FLWPUBK-e8254804afbc4943e5a6adc5437dd508-X</string>
     <string name="rave_payment_public_key_TEST">FLWPUBK-84e0877e4362bb0e63d3903000792b1f-X</string>
     <string name="rave_payment_secret_key">FLWSECK-aaea32bb8bb11a3514abb5385f2662f7-X</string>
     <string name="rave_payment_secret_key_TEST">FLWSECK-ab1cd646359c87753a5bb2eea12f40e3-X</string>

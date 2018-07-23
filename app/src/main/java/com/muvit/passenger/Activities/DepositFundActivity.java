@@ -180,14 +180,14 @@ public class DepositFundActivity extends AppCompatActivity {
                 .setCountry(getString(R.string.rave_payment_country))
                 .setCurrency(getString(R.string.rave_payment_currency))
                 .setEmail(PrefsUtil.with(DepositFundActivity.this).readString("email"))
-                .setPublicKey(getString(R.string.rave_payment_public_key))
-                .setSecretKey(getString(R.string.rave_payment_secret_key))
+                .setPublicKey("FLWPUBK-e8254804afbc4943e5a6adc5437dd508-X")
+                .setSecretKey("FLWSECK-aaea32bb8bb11a3514abb5385f2662f7-X")
                 .setTxRef(uniqueRef)//уникальная ссылка
                 .acceptAccountPayments(false)
                 .acceptCardPayments(true)
-                .onStagingEnv(true)
+                .onStagingEnv(false)
                 .setMeta(metaList)
-                // .withTheme(styleId)// измененная тема
+                // .withThme(styleId)// измененная тема
                 .initialize();
     }
 

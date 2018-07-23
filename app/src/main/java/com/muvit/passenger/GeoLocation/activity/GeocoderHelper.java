@@ -6,6 +6,7 @@ package com.muvit.passenger.GeoLocation.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 import com.muvit.passenger.AsyncTask.SetUpAdress;
+import com.muvit.passenger.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +34,7 @@ import java.util.Locale;
 
 public class GeocoderHelper {
     private boolean running = false;
+    private ProgressDialog prd;
 
     @SuppressLint("StaticFieldLeak")
     public void fetchAddress(final Activity contex, final Location location, final AutoCompleteTextView mAutoCompleteView,
@@ -185,13 +188,18 @@ public class GeocoderHelper {
 
 
     @SuppressLint("StaticFieldLeak")
-    public void fetchAddress1(final Activity contex, final Location location, final AutoCompleteTextView txtSourceLocation, SetUpAdress setUpAdress) {
+    public void fetchAddress1(final Activity contex, final Location location, SetUpAdress setUpAdress) {
 
         if (running)
             return;
 
         new AsyncTask<Void, Void, String>() {
             protected void onPreExecute() {
+                prd = new ProgressDialog(contex, R.style.DialogTheme);
+                prd.setTitle("Loading...");
+                prd.setMessage("Please Wait While Loading");
+                prd.setCancelable(false);
+                prd.show();
                 running = true;
             }
 
@@ -220,24 +228,6 @@ public class GeocoderHelper {
                                 } else {
                                     Log.e("FROM Third ELSE :", "ELSE");
                                 }
-                                contex.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        txtSourceLocation.setText(sb.toString());
-                                        txtSourceLocation.dismissDropDown();
-
-                                    }
-//                                        mAutoCompleteView.setFocusable(false);
-//                                        mAutoCompleteView.setFocusableInTouchMode(false);
-//                                        mAutoCompleteView.setText(sb.toString());
-//                                        mAutoCompleteView.setFocusable(true);
-//                                        mAutoCompleteView.setFocusableInTouchMode(true);
-//                                        mAutoCompleteView.setOnItemClickListener(null);
-//                                        mAutoCompleteView.setText(sb.toString());
-//                                        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
-//                                    }
-                                });
-//                                txtSourceLocation.setText(Address);
                             } else {
                                 Log.e("FROM second ELSE :", "ELSE");
                             }
@@ -315,7 +305,7 @@ public class GeocoderHelper {
 //                                        mAutoCompleteView.setOnItemClickListener(mAutocompleteClickListener);
 //                                    }
 //                                });
-                                txtSourceLocation.setText(address);
+
                                 return address;
                             }
                         }
@@ -333,6 +323,7 @@ public class GeocoderHelper {
                     Log.i("GeocoderHelper", address);
                     setUpAdress.setupAdress(address);
                 }
+                prd.dismiss();
             }
         }.execute();
     }
