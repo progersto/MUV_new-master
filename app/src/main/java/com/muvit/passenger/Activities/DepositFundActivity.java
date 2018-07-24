@@ -25,6 +25,7 @@ import com.flutterwave.raveandroid.RavePayActivity;
 import com.flutterwave.raveandroid.RavePayManager;
 import com.muvit.passenger.Application.ApplicationController;
 import com.muvit.passenger.AsyncTask.ParseJSON;
+import com.muvit.passenger.Fragments.VerifyFragment;
 import com.muvit.passenger.Models.CurrentBalancePOJO;
 import com.muvit.passenger.Models.DepositFundPOJO;
 import com.muvit.passenger.Models.MessageEvent;
@@ -160,35 +161,60 @@ public class DepositFundActivity extends AppCompatActivity {
 
     private void getPaymentNew(){
         //Getting the amount from editText
+//        String paymentAmount = edtDepositAmount.getText().toString();
+//
+//        //Create unique reference id for payment
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyymmdd_hhmmss");
+//        String uniqueRef = simpleDateFormat.format(new Date());
+//
+//        String numCard = getIntent().getStringExtra("numCard");
+//        String mm = getIntent().getStringExtra("mm");
+//        String yy = getIntent().getStringExtra("yy");
+//        String cvv = getIntent().getStringExtra("cvv");
+//        List<Meta> metaList = new ArrayList<>();
+//        metaList.add(new Meta("cardNum", numCard));
+//        metaList.add(new Meta("mm", mm));
+//        metaList.add(new Meta("yy", yy));
+//        metaList.add(new Meta("cvv", cvv));
+//
+//        new RavePayManager(DepositFundActivity.this).setAmount(Double.parseDouble(paymentAmount))
+//                .setCountry(getString(R.string.rave_payment_country))
+//                .setCurrency(getString(R.string.rave_payment_currency))
+//                .setEmail(PrefsUtil.with(DepositFundActivity.this).readString("email"))
+//                .setPublicKey(getString(R.string.rave_payment_public_key))
+//                .setSecretKey(getString(R.string.rave_payment_secret_key))
+//                .setTxRef(uniqueRef)//уникальная ссылка
+//                .acceptAccountPayments(false)
+//                .acceptCardPayments(true)
+//                .onStagingEnv(false)//change for TEST
+//                .setMeta(metaList)
+//                // .withThme(styleId)// измененная тема
+//                .initialize();
         String paymentAmount = edtDepositAmount.getText().toString();
-
-        //Create unique reference id for payment
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyymmdd_hhmmss");
-        String uniqueRef = simpleDateFormat.format(new Date());
-
-        String numCard = getIntent().getStringExtra("numCard");
+        String numCard = getIntent().getStringExtra("numCard").replace(" ", "");
         String mm = getIntent().getStringExtra("mm");
         String yy = getIntent().getStringExtra("yy");
         String cvv = getIntent().getStringExtra("cvv");
-        List<Meta> metaList = new ArrayList<>();
-        metaList.add(new Meta("cardNum", numCard));
-        metaList.add(new Meta("mm", mm));
-        metaList.add(new Meta("yy", yy));
-        metaList.add(new Meta("cvv", cvv));
 
-        new RavePayManager(DepositFundActivity.this).setAmount(Double.parseDouble(paymentAmount))
-                .setCountry(getString(R.string.rave_payment_country))
-                .setCurrency(getString(R.string.rave_payment_currency))
-                .setEmail(PrefsUtil.with(DepositFundActivity.this).readString("email"))
-                .setPublicKey("FLWPUBK-e8254804afbc4943e5a6adc5437dd508-X")
-                .setSecretKey("FLWSECK-aaea32bb8bb11a3514abb5385f2662f7-X")
-                .setTxRef(uniqueRef)//уникальная ссылка
-                .acceptAccountPayments(false)
-                .acceptCardPayments(true)
-                .onStagingEnv(false)
-                .setMeta(metaList)
-                // .withThme(styleId)// измененная тема
-                .initialize();
+        Bundle arguments = new Bundle();
+        /**
+         * need to be for card selection
+         */
+//        arguments.putString(VerifyFragment.CARDNO, selectedCardNo);
+//        arguments.putString(VerifyFragment.CVV, selectedCardCVV);
+//        arguments.putString(VerifyFragment.EXPIRY_MM, selectedCardMM);
+//        arguments.putString(VerifyFragment.EXPIRY_YY, selectedCardYY);
+//        arguments.putString(VerifyFragment.PAYMENT_AMOUNT, paymentAmount);
+
+        arguments.putString(VerifyFragment.CARDNO, numCard);
+        arguments.putString(VerifyFragment.CVV, cvv);
+        arguments.putString(VerifyFragment.EXPIRY_MM, mm);
+        arguments.putString(VerifyFragment.EXPIRY_YY, yy);
+        arguments.putString(VerifyFragment.PAYMENT_AMOUNT, paymentAmount);
+
+        VerifyFragment fragment = new VerifyFragment();
+        fragment.setArguments(arguments);
+        fragment.show(getSupportFragmentManager(), "verifyFragment");
     }
 
 

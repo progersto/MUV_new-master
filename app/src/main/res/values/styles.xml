@@ -28,6 +28,12 @@
         <item name="colorAccent">@color/white</item> <!-- Whatever color you want-->
     </style>
 
+    <style name="EditTextDialog" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/greenColor</item>
+        <item name="android:textColorHint">@color/greenColorHint</item>
+        <item name="colorControlActivated">@color/greenColor</item>
+        <item name="colorControlNormal">@color/yellow_light</item>
+    </style>
 
     <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
         <item name="colorAccent">@color/yellow_light</item>

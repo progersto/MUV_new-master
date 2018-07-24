@@ -13,6 +13,7 @@
     <color name="borderColor">#C6C6C6</color>
     <color name="yellowColor">#F8C749</color>
     <color name="greenColor">#58BD6E</color>
+    <color name="greenColorHint">#679371</color>
     <color name="transparentColor">#90FFFFFF</color>
     <color name="transparentColorBlack">#90000000</color>
     <color name="transparentColor1">#cbffffff</color>
