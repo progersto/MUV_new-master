@@ -23,6 +23,7 @@ import com.muvit.passenger.Activities.AddCardActivity;
 import com.muvit.passenger.Activities.DepositFundActivity;
 import com.muvit.passenger.Activities.RedeemHistoryActivity;
 import com.muvit.passenger.Activities.RedeemRequestActivity;
+import com.muvit.passenger.Application.ApplicationController;
 import com.muvit.passenger.AsyncTask.ParseJSON;
 import com.muvit.passenger.Models.MessageEvent;
 import com.muvit.passenger.Models.Response;
@@ -33,6 +34,9 @@ import com.muvit.passenger.Utils.PrefsUtil;
 import com.muvit.passenger.WebServices.WebServiceUrl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.muvit.passenger.database.AppDatabase;
+import com.muvit.passenger.database.Card;
+import com.muvit.passenger.database.CardDao;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,6 +45,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by nct119 on 24/10/16.
@@ -55,6 +64,8 @@ public class WalletFragment extends Fragment {
     ImageView back_btn;
     private Button btnAddMoney;
     private EditText rechargeEt;
+    private Disposable disposable;
+    private CardDao cardDao;
 
 
     @Nullable
@@ -178,9 +189,8 @@ public class WalletFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!rechargeEt.getText().toString().isEmpty()){
-                    Intent intent = new Intent(getContext(), DepositFundActivity.class);
-                    intent.putExtra("amount", rechargeEt.getText().toString());
-                    startActivity(intent);
+                    //запрашиваем карты
+                    getListAllCards();
                 }else {
                     Toast toast = Toast.makeText(getContext(), "Enter recharge amount!", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -189,6 +199,35 @@ public class WalletFragment extends Fragment {
             }
         });
     }
+
+    public void getListAllCards() {
+        AppDatabase db = ApplicationController.getInstance().getDatabase();
+        cardDao = db.cardDao();
+        disposable = cardDao.getListCards()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listAccounts -> {
+                    disposable.dispose();
+                    checkCard(listAccounts);
+                });
+    }//getListAllCards
+
+
+    private void checkCard(List<Card> listCards) {
+        if (listCards.size() > 0) {
+            // идем в  активность пополнения счета
+            Intent intent = new Intent(getContext(), DepositFundActivity.class);
+            intent.putExtra("numCard", listCards.get(0).getNumberCard());
+            intent.putExtra("mm", listCards.get(0).getMonth());
+            intent.putExtra("yy", listCards.get(0).getYear());
+            intent.putExtra("cvv", listCards.get(0).getCvv());
+            intent.putExtra("amount", rechargeEt.getText().toString());
+            startActivity(intent);
+        } else {
+            // открываем добавление карты в базу
+            startActivity(new Intent(getContext(), AddCardActivity.class));
+        }//if
+    }//checkCard
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

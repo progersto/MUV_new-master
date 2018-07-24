@@ -199,11 +199,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-                pickUpPoint = new LatLng(location.getLatitude(), location.getLongitude());
-                setPickupMarker(pickUpPoint, "onLocationChanged");
-                locationManager.removeUpdates(this);
-                if (prd != null)
-                    prd.dismiss();
+            pickUpPoint = new LatLng(location.getLatitude(), location.getLongitude());
+            setPickupMarker(pickUpPoint, "onLocationChanged");
+            locationManager.removeUpdates(this);
+            if (prd != null)
+                prd.dismiss();
         }
 
         @Override
@@ -312,11 +312,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         mAutoCompleteView.setOnItemClickListener(mAutocompleteDropOffClickListener);
         mAutoCompleteView.setAdapter(mAdapterDropOff);
 
-//        Message msg = handler.obtainMessage();
-//        msg.obj = mAutoCompleteView;
-//        handler.sendMessageDelayed(msg, 200);   // turn it back on after 200ms
-
-
         txtSource.setOnItemClickListener(mAutocompletePickUpClickListener);
         txtSource.setAdapter(mAdapterPickUp);
 
@@ -359,7 +354,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         imgNav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prd = new ProgressDialog(getContext(),R.style.DialogTheme);
+                prd = new ProgressDialog(getContext(), R.style.DialogTheme);
                 prd.setTitle("Loading...");
                 prd.setMessage("Please Wait While Loading");
                 prd.setCancelable(false);
@@ -473,44 +468,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
 
-    //    public void setPickupMarker(LatLng point, String location) {
-//        try {
-//            List<Address> addresses = new ArrayList<>();
-//            try {
-//                addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            Address address = addresses.get(0);
-//
-//            if (address != null) {
-//                StringBuilder sb = new StringBuilder();
-//                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-//                    sb.append(address.getAddressLine(i) + " ");
-//                }
-//                //Toast.makeText(WorkLocationActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
-//            }
-//
-//            //remove previously placed Marker
-//            if (pickupMarker != null) {
-//                pickupMarker.remove();
-//            }
-//
-//            //place marker where user just clicked
-//            pickupMarker = map.addMarker(new MarkerOptions().position(point).title(location)
-//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
-//            pickupMarker.showInfoWindow();
-//            //moveToCurrentLocation(dropoffLatLng);
-//            moveToCurrentLocation1(point);
-//            //moveToCurrentLocation(point);
-//        } catch (Exception e) {
-//            // Toast.makeText(Step2Activity.this, "Cannot get address from clicked location", Toast.LENGTH_SHORT).show();
-//            e.printStackTrace();
-//        }
-//    }
-
-
     private void setupToolbar(View rootView) {
         toolbar = (Toolbar) rootView.findViewById(R.id.toolBar);
         txtTitle = (TextView) rootView.findViewById(R.id.txtTitle);
@@ -519,19 +476,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //todo пока коментим
-//                   onBackPressed();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
 
@@ -612,7 +556,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                     disposable.dispose();
                     checkCard(listAccounts);
                 });
-    }//getListImageObj
+    }//getListAllCards
 
 
     private void checkCard(List<Card> listCards) {
@@ -628,7 +572,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             // открываем добавление карты в базу
             startActivity(new Intent(getContext(), AddCardActivity.class));
         }//if
-    }//sowData
+    }//checkCard
 
 
     private void initEstimate() {
@@ -1104,8 +1048,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 } else {
                     // Toast.makeText(Step2Activity.this, "You have not set Work location", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -1113,14 +1055,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         dialog.show();
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        if (layoutOverlay.getVisibility() != View.VISIBLE) {
-//            super.onBackPressed();
-//        }
-//
-//    }
 
 
     @Override
@@ -1246,48 +1180,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
 
-//    private void initViews(View rootView) {
-//
-//
-//        recyclerView = rootView.findViewById(R.id.recyclerView);
-//        //todo пока коментим
-//        //rvSubType = rootView.findViewById(R.id.rvSubType);
-//        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-//        carTypelayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setHasFixedSize(true);
-//        rvSubType.setLayoutManager(carTypelayoutManager);
-//        rvSubType.setHasFixedSize(true);
-//        mAutoCompleteView = rootView.findViewById(R.id.autocomplete_places);
-//        imgLocation = rootView.findViewById(R.id.imgLocation);
-//        //todo пока коментим
-////        imgPrev = rootView.findViewById(R.id.imgPrev);
-////        imgNext = rootView.findViewById(R.id.imgNext);
-////        imgSubPrev = rootView.findViewById(R.id.imgSubPrev);
-////        imgSubNext = rootView.findViewById(R.id.imgSubNext);
-////        subCarLayout = rootView.findViewById(R.id.subCarLayout);
-////        carLayout = rootView.findViewById(R.id.carLayout);
-//
-//        try {
-//            carLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            subCarLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            subCarLayout.getLayoutTransition().setStartDelay(LayoutTransition.CHANGE_DISAPPEARING, 0);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-////        setUpMap();
-//    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -1304,7 +1196,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         } catch (Exception e) {
 
         }
-
     }
 
     @Override
@@ -1313,270 +1204,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
         locationManager.removeUpdates(locationListener);
     }
 
-    //    public void setUpMap() {
-//        FragmentManager fm = getChildFragmentManager();
-//        SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
-//        if (mapFragment == null) {
-//            mapFragment = new SupportMapFragment();
-//            FragmentTransaction ft = fm.beginTransaction();
-//            ft.add(R.id.mapFragmentContainer, mapFragment, "mapFragment");
-//            ft.commit();
-//            fm.executePendingTransactions();
-//        }
-//        mapFragment.getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(GoogleMap googleMap1) {
-//                try {
-//                    googleMap = googleMap1;
-//                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                        // TODO: Consider calling
-//                        //    ActivityCompat#requestPermissions
-//                        // here to request the missing permissions, and then overriding
-//                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                        //                                          int[] grantResults)
-//                        // to handle the case where the user grants the permission. See the documentation
-//                        // for ActivityCompat#requestPermissions for more details.
-//                        return;
-//                    }
-//                    googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//                        @Override
-//                        public void onMapClick(LatLng point) {
-//                            if (!mAutoCompleteView.isPopupShowing()) {
-//                                setMarker(point);
-//                            }
-//                            KeyboardUtils.hideSoftKeyboard(getActivity());
-//
-//                        }
-//                    });
-//                    // googleMap.setMyLocationEnabled(true);
-//                    GPSTracker gpsTracker = new GPSTracker(getActivity());
-//                    Location location = gpsTracker.getLocation();
-//                    if (!gpsTracker.canGetLocation()) {
-//                        if (!PrefsUtil.isStartGPSShowing) {
-//                            gpsTracker.showSettingsAlert();
-//                        }
-//                    }
-//                    if (location.getLatitude() == 9999999 || location.getLongitude() == 9999999) {
-//                        //Toast.makeText(getActivity(), "Location not available", Toast.LENGTH_SHORT).show();
-//
-//                    } else {
-//                        selectedLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                        setMarker(selectedLatLng);
-//                    }
-//                    /*Geocoder geocoder = new Geocoder(getActivity());
-//                    List<Address> addresses  = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-//                    Log.e("UserProfileFragment", "onMapReady: "+addresses.get(0).getCountryName());*/
-//
-//                    MarkerOptions markerOptions = new MarkerOptions();
-//                    markerOptions.position(new LatLng(location.getLatitude(), location.getLongitude()));
-//                    //googleMap.addMarker(markerOptions);
-//                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//                    builder.include(markerOptions.getPosition());
-//
-//                    LatLngBounds bounds = builder.build();
-//                    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 5));
-//                    googleMap.moveCamera(CameraUpdateFactory.zoomTo(18));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-
-
-//    public void getUserLocation() {
-//        String url = WebServiceUrl.ServiceUrl + WebServiceUrl.usergetlocation;
-//        ArrayList<String> params = new ArrayList<>();
-//        params.add("userId");
-//        ArrayList<String> values = new ArrayList<>();
-//        values.add(String.valueOf(PrefsUtil.with(getActivity()).readInt("uId")));
-//        new ParseJSON(getActivity(), url, params, values, UserLocationPOJO.class, new ParseJSON.OnResultListner() {
-//            @Override
-//            public void onResult(boolean status, Object obj) {
-//                if (status) {
-//                    UserLocationPOJO resultObj = (UserLocationPOJO) obj;
-//                    if (!TextUtils.isEmpty(resultObj.getUserLocation().get(0).getHomeLocation())) {
-//                        isHomeLocation = true;
-//                        homeLocation = new LatLng(Double.parseDouble(resultObj.getUserLocation().get(0).getHomeLat()), Double.parseDouble(resultObj.getUserLocation().get(0).getHomeLong()));
-//                    } else {
-//                        isHomeLocation = false;
-//                    }
-//
-//                    if (!TextUtils.isEmpty(resultObj.getUserLocation().get(0).getWorkLocation())) {
-//                        isWorkLocation = true;
-//                        workLocation = new LatLng(Double.parseDouble(resultObj.getUserLocation().get(0).getWorkLat()), Double.parseDouble(resultObj.getUserLocation().get(0).getWorkLong()));
-//                    } else {
-//                        isWorkLocation = false;
-//                    }
-//                    showLocationDialog();
-//
-//                } else {
-//                    Toast.makeText(getActivity(), (String) obj, Toast.LENGTH_SHORT).show();
-//                }
-//
-//
-//            }
-//        });
-//    }
-
-//    public void setMarker(final LatLng point) {
-//
-//        Runnable newthread = new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                try {
-//                    if (getActivity() != null) {
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                try {
-//                                    selectedLatLng = point;
-//                                    Location temp = new Location(LocationManager.GPS_PROVIDER);
-//                                    temp.setLatitude(point.latitude);
-//                                    temp.setLongitude(point.longitude);
-//                                    GeocoderHelper gHelper = new GeocoderHelper();
-//                                    gHelper.fetchAddress(getActivity(), temp, mAutoCompleteView, mAutocompleteClickListener);
-//
-//                                    //remove previously placed Marker
-//                                    if (marker != null) {
-//                                        marker.remove();
-//                                    }
-//
-//                                    //place marker where user just clicked
-//                                    try {
-//                                        marker = googleMap.addMarker(new MarkerOptions().position(point).title("Pick Up")
-//                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pick_up_marker)));
-//                                    } catch (NullPointerException npe) {
-//                                        npe.printStackTrace();
-//                                    }
-//                                    moveToCurrentLocation(selectedLatLng);
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        });
-//                    }
-//                } catch (Exception e) {
-//                    if (getActivity() != null) {
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Toast.makeText(getActivity(), "Cannot get address from location", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
-//
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        };
-//
-//        Thread t = new Thread(newthread);
-//        t.start();
-//    }
-
-
-//    private void showLocationDialog() {
-//        dialog = new Dialog(getActivity()
-//        );
-//        try {
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        dialog.setContentView(R.layout.dialog_user_location);
-//        dialog.setCancelable(false);
-//
-//        TextView txtClose = (TextView) dialog.findViewById(R.id.txtClose);
-//        TextView txtHome = (TextView) dialog.findViewById(R.id.txtHome);
-//        TextView txtWork = (TextView) dialog.findViewById(R.id.txtWork);
-//
-//        if (!isHomeLocation) {
-//            txtHome.setText("No Home Location Set");
-//        }
-//
-//        if (!isWorkLocation) {
-//            txtWork.setText("No Work Location Set");
-//        }
-//
-//        txtClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        txtHome.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isHomeLocation) {
-//                    setMarker(homeLocation);
-//                    dialog.dismiss();
-//                } else {
-//                    //Toast.makeText(getActivity(), "You have not set Home location", Toast.LENGTH_SHORT).show();
-//                }
-//
-//
-//            }
-//        });
-//
-//        txtWork.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isWorkLocation) {
-//                    setMarker(workLocation);
-//                    dialog.dismiss();
-//                } else {
-//                    //Toast.makeText(getActivity(), "You have not set Work location", Toast.LENGTH_SHORT).show();
-//                }
-//
-//
-//            }
-//        });
-//
-//        // now that the dialog is set up, it's time to show it
-//        dialog.show();
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//    }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        android.util.Log.e("HomeFragment", "onStart: ");
-//        try {
-//            EventBus.getDefault().register(this);
-//        } catch (Exception e) {
-//
-//        }
-//
-//    }
-
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        android.util.Log.e("HomeFragment", "onStart: ");
-//        stopTimer();
-//    }
-//
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMessageEvent(MessageEvent event) {
-//
-//        if (event.getType().equalsIgnoreCase("cancelride") || event.getType().equalsIgnoreCase("rideInfo")) {
-//            android.util.Log.e("HomeFragment", "onMessageEvent: ");
-//            try {
-//
-//                adapter.resetSelection();
-//                adapter.notifyDataSetChanged();
-//                caryTypeList.clear();
-//                subCarTypeAdapter.notifyDataSetChanged();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     @Override
     public void onResume() {
@@ -1586,8 +1213,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             ((HomeActivity) getActivity()).hideToolbarTiltle();
             ((HomeActivity) getActivity()).turnActionBarIconBlack();
         }
-
-
         startTimer();
     }
 
