@@ -284,6 +284,7 @@ public class VerifyFragment extends DialogFragment {
                                         otp.setText("");
                                         otp.setHint("Enter your OTP");
                                         isChargeMade = true;
+                                        isConfirmationNeeded = false;
                                         Toast.makeText(getContext(), "Card successfully authenticate", Toast.LENGTH_SHORT).show();
                                     } else {
                                         progressBar.setVisibility(View.GONE);
@@ -420,6 +421,7 @@ public class VerifyFragment extends DialogFragment {
                         otp.setText("");
                         otp.setHint("Enter your OTP");
                         isChargeMade = true;
+                        isConfirmationNeeded = false;
                         Toast.makeText(getContext(), "Card successfully authenticate", Toast.LENGTH_SHORT).show();
                     }else {
                         progressBar.setVisibility(View.GONE);

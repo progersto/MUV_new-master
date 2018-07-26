@@ -129,8 +129,8 @@ public class AddCardActivity extends AppCompatActivity {
     }
 
 
-    public void deleteCard(final Card card) {
-        Completable.fromAction(() -> cardDao.delete(card)).subscribeOn(Schedulers.io())
+    public void deleteCard(final Card card1) {
+        Completable.fromAction(() -> cardDao.delete(card1)).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
@@ -139,13 +139,10 @@ public class AddCardActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-                        card_num.setText("");
-                        card_mm.setText("");
-                        card_yy.setText("");
-                        card_cvv.setText("");
-                        delete_card_btn.setVisibility(View.GONE);
-                        add_card_btn.setText("ADD CARD");
-
+                        Intent intent = new Intent(AddCardActivity.this, PaymentsActivity.class);
+                        intent.putExtra("card", card);
+                        startActivity(intent);
+                        finish();
                     }
 
                     @Override

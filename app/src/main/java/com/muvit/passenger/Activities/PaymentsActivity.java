@@ -29,6 +29,7 @@ public class PaymentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(PaymentsActivity.this,AddCardActivity.class));
+                finish();
             }
         });
     }
