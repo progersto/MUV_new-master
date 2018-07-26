@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#EDEDED</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#000000</color>
+
+    <color name="light_black">#292929</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#707070</color>
+    <color name="grey2">#777777</color>
+    <color name="grey3">#505050</color>
+    <color name="light_grey">#F1F1F1</color>
+    <color name="borderColor">#C6C6C6</color>
+    <color name="yellowColor">#F8C749</color>
+    <color name="greenColor">#58BD6E</color>
+    <color name="greenColorHint">#679371</color>
+    <color name="transparentColor">#90FFFFFF</color>
+    <color name="transparentColorBlack">#90000000</color>
+    <color name="transparentColor1">#cbffffff</color>
+    <color name="yellowTransparentColor">#acf8c749</color>
+
+    <!--Crop Activity Color-->
+    <color name="base">#FFFFFB</color>
+    <color name="frame">#86C166</color>
+    <color name="guide">#AA86C166</color>
+    <color name="overlay">#AA1C1C1C</color>
+    <color name="handle">#86C166</color>
+
+
+    <color name="notif_error">#F76061</color>
+    <color name="notif_success">#008C00</color>
+    <color name="notif_info">#4195E9</color>
+
+    <color name="trip_status_color">#66BA6C</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="yellow_light">#FFFD38</color>
+    <color name="blue_fn">#3086D6</color>
+    <color name="red_fn">#D01125</color>
+
+    <color name="navy_blue_fn">#15103A</color>
+    <color name="grey_fn">#18180A</color>
+    <color name="dull_golden">#20200a</color>
+</resources>

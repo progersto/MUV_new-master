@@ -1,0 +1,193 @@
+<resources>
+    <string name="app_name">MUV</string>
+
+    <!--Facebook App Id-->
+    <string name="facebook_app_id">128888991133497</string>
+    <!--<string name="facebook_app_id">273105949757564</string>-->
+
+    <!--Login Activity-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="or">Or</string>
+
+    <!--SignUp Activity-->
+    <string name="signup_title">Create an Account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="submit">Submit</string>
+    <string name="send">Send</string>
+
+    <!--About Us Activity-->
+    <string name="about_us_title">About Us</string>
+    <string name="get_in_touch">Get In Touch!</string>
+    <string name="always_within_your_reach">Always within your reach</string>
+    <string name="please_enter_your_query_here">Please Enter Your Query Here.</string>
+
+    <!--Wallet Fragment-->
+    <string name="current_balance">Current Balance</string>
+    <string name="deposit_funds">Deposit Funds</string>
+    <string name="redeem_request">Redeem Request</string>
+    <string name="deposit_fund">Deposit Fund</string>
+
+    <!--Deposit Fund Activity-->
+    <string name="deposit_fund_title">Deposit Fund</string>
+    <string name="enter_deposit_amount">Enter Deposit Amount (₦)</string>
+
+    <!--Redeem Request Activity-->
+    <string name="amount">Amount (₦)</string>
+    <string name="description">Description</string>
+    <string name="redeem_request_title">Redeem Request</string>
+
+    <!--My User Profile Fragment-->
+    <string name="my_places">My Places</string>
+    <string name="add_work_location"><u>Add Work Location</u></string>
+    <string name="add_home_location"><u>Add Home Location</u></string>
+    <string name="payment_method">Payment Method</string>
+
+    <!--User Edit Profile Activity-->
+    <string name="update_profile">Update Profile</string>
+    <string name="wallet">Wallet</string>
+    <string name="cash">Cash</string>
+    <string name="user_edit_profile_title">Edit Profile</string>
+    <string name="complete_profile">Complete Profile</string>
+
+    <!--Fare Summery Activity-->
+    <string name="fare_summery_title">Fare Summary</string>
+    <string name="hatchback">Hatchback -</string>
+    <string name="pick_up">Pick Up</string>
+    <string name="drop_off">Drop Off</string>
+    <string name="base_fare">Base Fare</string>
+    <string name="extra_km">Extra Km</string>
+    <string name="time_taken">Time Taken</string>
+    <string name="total">Total</string>
+    <string name="please_rate_the_driver">Please rate the Driver</string>
+
+    <!--My Trip Fragment-->
+    <string name="view_details"><u>View Details</u></string>
+
+    <!--Navigation Drawer-->
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="home">Home</string>
+    <string name="my_profile">My Profile</string>
+    <string name="nav_wallet">My Wallet</string>
+    <string name="rides">Rides</string>
+    <string name="notifications">Notifications</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="help">Help</string>
+    <string name="about">About</string>
+    <string name="info">Info</string>
+    <string name="logout">Logout</string>
+
+    <!--Home Fragment-->
+    <string name="pick_up_location">Pick Up Location</string>
+
+    <!--Step2 Activity-->
+    <string name="step2_title">Ride Now</string>
+    <string name="drop_off_location">Drop Off Location</string>
+    <string name="fare_estimate">Fare Estimate</string>
+
+    <!--Ride Information Activity-->
+    <string name="ride_information_title">Ride Information</string>
+    <string name="estimated_arrival_time">Estimated Arrival Time</string>
+    <string name="card_no">Car No.</string>
+    <string name="contact_no">Contact No.</string>
+    <string name="time_charges_per_min">Time Charges (Per Min)</string>
+    <string name="track_drive">Track Driver</string>
+    <string name="track_trip">Track Trip</string>
+    <string name="cancel_trip">Cancel Trip</string>
+
+    <!--Ride Details Activity-->
+    <string name="ride_details_title">Ride Details</string>
+    <string name="view_location_on_map">View Location on Map</string>
+    <string name="ride_details_base_fare">Base Fare</string>
+    <string name="ride_details_extra_km">Extra Km</string>
+    <string name="ride_details_time_taken">Time Taken</string>
+    <string name="ride_details_total">Total</string>
+    <string name="report_driver">Report Driver</string>
+    <string name="my_review">My Review</string>
+
+    <!--Work Location Activity-->
+    <string name="work_location_title">Work Location</string>
+    <string name="home_location_title">Home Location</string>
+    <string name="save_location">Save Location</string>
+
+    <!--Popup Fare Estimate-->
+    <string name="popup_pick_up">Pick Up</string>
+    <string name="popup_drop_off">Drop Off</string>
+    <string name="close">Close</string>
+    <string name="fare_estimation">Fare Estimation</string>
+
+    <!--Crop Activity-->
+    <string name="crop_activity_title">Crop</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="currencySign">₦</string>
+    <string name="select_location">Select Location</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="change_password">Change Password</string>
+    <string name="completed">Completed</string>
+    <string name="success">Success</string>
+    <string name="available_balance">Available Balance</string>
+    <string name="subject">Subject</string>
+    <string name="enter_old_password">Enter Old Password</string>
+    <string name="enter_new_password">Enter New Password</string>
+    <string name="done">Done</string>
+    <string name="enter_confirm_password">Enter Confirm Password</string>
+    <string name="premium">Premium</string>
+    <string name="change_panic_contact_details">Change Panic Contact Details</string>
+    <string name="enter_panic_contact_no">Enter Panic Contact No</string>
+    <string name="change_contact_number">Change Contact Number</string>
+    <string name="change_paypal_email">Change Paypal Email</string>
+    <string name="enter_paypal_email">Enter Paypal Email</string>
+    <string name="home_location">Home Location</string>
+    <string name="change_notification_settings">Change Notification Settings</string>
+    <string name="notify_me_when_ride_is_canceled">Notify me when ride is canceled</string>
+    <string name="work_location">Work Location</string>
+    <string name="notify_me_when_ride_is_completed">Notify me when ride is completed</string>
+    <string name="notify_me_when_fund_deposited_to_my_account">Notify me when fund deposited to my account</string>
+    <string name="notify_me_when_my_redeem_request_is_accepted_or_rejected">Notify me when my redeem request is accepted or rejected</string>
+    <string name="by_cash">by cash</string>
+    <string name="save_notification_settings">Save Notification settings</string>
+    <string name="by_wallet">by wallet</string>
+    <string name="current_bal_inst">This amount can be used to book a ride.</string>
+    <string name="redeem_request_inst">This amount is the amount you requested to redeem.</string>
+    <string name="sync_data_message">Internet connection is not available. Last synced data will be displayed</string>
+    <string name="deposit_fund_instructions">You can add funds to your wallet which can be used later to book rides.</string>
+    <string name="date">Date:</string>
+    <string name="rh_amount">Amount:</string>
+    <string name="rh_description">Description:</string>
+    <string name="rh_email_address">Email Address:</string>
+    <string name="redeem_history"><i><u>View Redeem History</u></i></string>
+    <string name="redeem_history_title">Redeem Request History</string>
+    <string name="resend_mail_message">You have successfully registered for MUV. Please check your mail for activation link. \n\nHaven\'t received activation mail? Please click on <b>Resend</b> button to send it again</string>
+
+    <string name="wait_message_1">Getting car Ready…</string>
+    <string name="wait_message_2">Fetching Driver…</string>
+    <string name="wait_message_3">Seat Belts on!</string>
+    <string name="wait_message_4">Fueling up…</string>
+    <string name="book_ride">Book Ride</string>
+
+    <string name="no_internet_connection">Seems like your internet is not fast as you.</string>
+    <string name="sign_in">sign in</string>
+    <string name="google_plus">Google+</string>
+    <string name="facebook">Facebook</string>
+    <string name="terms_conditoins">Terms &amp; Conditions</string>
+    <string name="terms_conditoins_agree">By proceeding, You agree to out Terms &amp; Conditions</string>
+    <string name="information">It is a long estastandardblished fact that a reader will be  distracted by the readable content of a page  when looking at its layout. The point of using  Lorem Ipsum is that it has a more-or-less  normal distribution of letters, as opposed to  using \'Content here, content here\', making  it look like readable English.  Many desktop publishing packages and web  page editors now use Lorem Ipsum as their  default model text, and a search for  \'lorem ipsum\' will uncover many web sites still  in their infancy.  Various versions have evolved over the years,  sometimes by accident, sometimes on purpose  (injected humour and the like).</string>
+    <string name="navigation_drawer_close">drawer close</string>
+    <string name="navigation_drawer_open">drawer open</string>
+
+    <string name="rave_payment_public_key">FLWPUBK-e8254804afbc4943e5a6adc5437dd508-X</string>
+    <string name="rave_payment_public_key_TEST">FLWPUBK-84e0877e4362bb0e63d3903000792b1f-X</string>
+    <string name="rave_payment_secret_key">FLWSECK-aaea32bb8bb11a3514abb5385f2662f7-X</string>
+    <string name="rave_payment_secret_key_TEST">FLWSECK-ab1cd646359c87753a5bb2eea12f40e3-X</string>
+    <string name="rave_payment_country">NG</string>
+    <string name="rave_payment_currency">NGN</string>
+
+
+</resources>

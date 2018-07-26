@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+
+
+    tools:context="com.muvit.passenger.Activities.LoginActivity">
+    <LinearLayout
+        android:background="@color/navy_blue_fn"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/city_car"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:textSize="20sp"
+                android:text="Please Select Car"
+                android:textColor="@color/yellow_light"
+
+                />
+
+            <ImageView
+                android:layout_marginTop="20dp"
+                android:id="@+id/city_car"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/city_car"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+
+                android:text="Toyota Corolla"
+                android:textColor="@color/yellow_light" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/city_car"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+
+                android:text="Economy"
+                android:textColor="@color/yellow_light" />
+            <View
+                android:layout_gravity="center_horizontal"
+                android:layout_width="40dp"
+                android:layout_height="1dp"
+                android:background="@color/yellow_light"
+                android:layout_marginTop="5dp"
+
+
+                />
+
+        </LinearLayout>
+
+
+        <!--<Button-->
+            <!--android:layout_marginLeft="30dp"-->
+            <!--android:layout_marginRight="30dp"-->
+            <!--android:id="@+id/btnGoOnline"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/go_online"-->
+            <!--android:layout_marginTop="05dp"-->
+            <!--android:background="@color/red_fn"-->
+            <!--android:textColor="#fff"-->
+            <!--/>-->
+
+    </LinearLayout>
+
+</RelativeLayout>

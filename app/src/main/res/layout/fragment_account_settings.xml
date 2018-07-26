@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nestedMyCar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/navy_blue_fn"
+    android:fillViewport="true"
+    android:paddingBottom="10dp"
+    android:layout_marginTop="50dp"
+
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/account_settings_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_password"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/yellow_light"
+                />
+
+            <EditText
+                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:id="@+id/edtOldPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/bottom_border_yellow"
+                android:hint="@string/enter_old_password"
+                android:inputType="text"
+                android:textColor="@color/yellow_light"
+                android:textColorHint="@color/yellow_light"
+                android:singleLine="true"
+
+                />
+
+            <!--<EditText-->
+                <!--android:id="@+id/edtOldPassword"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:background="@drawable/edittext_background"-->
+                <!--android:hint="@string/enter_old_password"-->
+                <!--android:inputType="textPassword"-->
+                <!--android:textColor="@color/grey3" />-->
+
+
+            <EditText
+
+                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:id="@+id/edtNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/bottom_border_yellow"
+                android:hint="@string/enter_new_password"
+                android:inputType="text"
+                android:textColor="@color/yellow_light"
+                android:textColorHint="@color/yellow_light"
+                android:singleLine="true"
+
+                />
+
+            <!--<EditText-->
+                <!--android:id="@+id/edtNewPassword"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:background="@drawable/edittext_background"-->
+                <!--android:clickable="true"-->
+                <!--android:hint="@string/enter_new_password"-->
+                <!--android:inputType="textPassword"-->
+                <!--android:textColor="@color/grey3" />-->
+
+
+            <EditText
+
+                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:id="@+id/edtConfPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/bottom_border_yellow"
+                android:hint="Confirm New Password"
+                android:inputType="text"
+                android:textColor="@color/yellow_light"
+                android:textColorHint="@color/yellow_light"
+                android:singleLine="true"
+
+                />
+
+            <!--<EditText-->
+                <!--android:id="@+id/edtConfPassword"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:background="@drawable/edittext_background"-->
+                <!--android:clickable="true"-->
+                <!--android:hint="@string/enter_confirm_password"-->
+                <!--android:inputType="textPassword"-->
+                <!--android:textColor="@color/grey3" />-->
+
+
+            <Button
+                android:textAllCaps="true"
+                android:id="@+id/btnChangePassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/yellow_light"
+                android:text="@string/change_password"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            <!--<Button-->
+                <!--android:id="@+id/btnChangePassword"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="42dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:background="@color/yellowColor"-->
+                <!--android:text="@string/change_password"-->
+                <!--android:textColor="#000" />-->
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/yellow_light" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change Emergency Contact"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/yellow_light"
+                />
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/change_panic_contact_details"-->
+                <!--android:textStyle="bold" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bottom_border_yellow"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatSpinner
+
+                    app:backgroundTint="@color/yellow_light"
+                    android:id="@+id/spinnerCountryCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="0" />
+
+                <EditText
+
+                    android:layout_marginStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtPanicContact"
+                    android:background="@drawable/left_border_yellow"
+                    android:hint="@string/mobile_number"
+                    android:inputType="phone"
+                    android:textColor="@color/yellow_light"
+                    android:textColorHint="@color/yellow_light"
+                    android:singleLine="true"
+                    android:layout_marginLeft="5dp" />
+
+                <!--<Spinner-->
+                    <!--android:id="@+id/spinnerCountryCode"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_weight="0" />-->
+
+                <!--<View-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginLeft="05dp"-->
+                    <!--android:layout_marginRight="05dp"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:background="@color/borderColor" />-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/edtPanicContact"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@color/transparent"-->
+                    <!--android:hint="@string/enter_panic_contact_no"-->
+                    <!--android:inputType="number"-->
+                    <!--android:maxLength="10"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:textColor="@color/grey3" />-->
+            </LinearLayout>
+
+            <!-- <EditText
+                 android:id="@+id/edtPanicContact"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="10dp"
+                 android:background="@drawable/edittext_background"
+                 android:inputType="number"
+                 android:maxLength="10"
+                 android:hint="Enter Panic Contact No" />-->
+
+            <Button
+                android:textAllCaps="true"
+                android:id="@+id/btnChangeContactNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/yellow_light"
+                android:text="@string/change_contact_number"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            <!--<Button-->
+                <!--android:id="@+id/btnChangeContactNo"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="42dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:background="@color/yellowColor"-->
+                <!--android:text="@string/change_contact_number"-->
+                <!--android:textColor="#000" />-->
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/yellow_light" />
+
+        <!--<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_paypal_email"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/edtPayPalEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/grey3"
+                android:background="@drawable/edittext_background"
+                android:hint="@string/enter_paypal_email"/>
+
+
+            <Button
+                android:id="@+id/btnChangePaypalEmail"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/yellowColor"
+                android:text="@string/change_paypal_email"
+                android:textColor="#000"/>
+        </LinearLayout>-->
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/change_notification_settings"-->
+                <!--android:textStyle="bold" />-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_notification_settings"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/yellow_light"
+                />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutNotif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="05dp"
+            android:visibility="visible">
+
+            <TextView
+                android:textColor="@color/yellow_light"
+                android:id="@+id/txtBuyerNotif1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/chkBuyerNotif1"
+                android:text="@string/notify_me_when_ride_is_canceled" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:theme="@style/checkBoxStyle"
+                android:buttonTint="@color/yellow_light"
+                android:id="@+id/chkBuyerNotif1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true" />
+
+            <TextView
+                android:textColor="@color/yellow_light"
+                android:id="@+id/txtBuyerNotif2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/txtBuyerNotif1"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/chkBuyerNotif2"
+                android:text="@string/notify_me_when_ride_is_completed" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:theme="@style/checkBoxStyle"
+                android:buttonTint="@color/yellow_light"
+                android:id="@+id/chkBuyerNotif2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/txtBuyerNotif2"
+                android:layout_toEndOf="@+id/txtBuyerNotif1"
+                android:layout_toRightOf="@+id/txtBuyerNotif1" />
+
+            <TextView
+                android:textColor="@color/yellow_light"
+                android:id="@+id/txtBuyerNotif3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/txtBuyerNotif2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/chkBuyerNotif3"
+                android:text="@string/notify_me_when_fund_deposited_to_my_account" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:theme="@style/checkBoxStyle"
+                android:buttonTint="@color/yellow_light"
+                android:id="@+id/chkBuyerNotif3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/txtBuyerNotif3"
+                android:layout_toEndOf="@+id/txtBuyerNotif1"
+                android:layout_toRightOf="@+id/txtBuyerNotif1" />
+
+            <TextView
+                android:textColor="@color/yellow_light"
+                android:id="@+id/txtBuyerNotif4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/txtBuyerNotif3"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/chkBuyerNotif3"
+                android:text="@string/notify_me_when_my_redeem_request_is_accepted_or_rejected" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:buttonTint="@color/yellow_light"
+                android:id="@+id/chkBuyerNotif4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/txtBuyerNotif4"
+                android:layout_toEndOf="@+id/txtBuyerNotif1"
+                android:layout_toRightOf="@+id/txtBuyerNotif1"
+                android:theme="@style/checkBoxStyle"
+
+                />
+
+        </RelativeLayout>
+
+        <!--<Button-->
+            <!--android:id="@+id/btnSaveSettings"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="42dp"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:background="@color/yellowColor"-->
+            <!--android:text="@string/save_notification_settings"-->
+            <!--android:textColor="#000" />-->
+        <Button
+            android:textAllCaps="true"
+            android:id="@+id/btnSaveSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/yellow_light"
+            android:text="@string/change_contact_number"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
