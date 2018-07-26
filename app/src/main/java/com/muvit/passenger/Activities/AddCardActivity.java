@@ -145,6 +145,7 @@ public class AddCardActivity extends AppCompatActivity {
                         card_cvv.setText("");
                         delete_card_btn.setVisibility(View.GONE);
                         add_card_btn.setText("ADD CARD");
+
                     }
 
                     @Override
