@@ -651,7 +651,7 @@ public void loginWithCreds(String strEmail, String strPassword) {
         params.add("email");
         params.add("password");
         ArrayList<String> values = new ArrayList<>();
-        values.add(strEmail);
+        values.add(strEmail.toLowerCase().trim());
         values.add(strPassword);
         new ParseJSON(SignInActivity.this, WebServiceUrl.ServiceUrl + WebServiceUrl.userlogin, params, values, LoginPOJO.class, new ParseJSON.OnResultListner() {
 @Override

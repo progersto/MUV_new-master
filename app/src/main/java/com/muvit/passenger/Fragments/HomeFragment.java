@@ -113,11 +113,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     protected GoogleApiClient mGoogleApiClient;
     Dialog promoDialog, fareDialog, paymentMethodDialog;
     private ProgressDialog prd;
-    RelativeLayout cancelBtn, okBtn, cancelFare, btnCash, btnWallet, btnCard;
+    RelativeLayout cancelBtn, okBtn, cancelFare, btnCash, btnWallet, btnCard, cal_btn;
     TextView fareView, startLocation, endLocation, car_name;
 
     String carTypeId = "3";
-    String subCarTypeId = "2";
+    String subCarTypeId = "2";//defoult Economy
     FareEstimateItem fareSummaryItem;
     String defaultPaymentMethod = "w";
     TextSwitcher txtSwitcherMessage;
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private Toolbar toolbar;
     private TextView txtTitle;
     private ImageView imgWallet, dashLine, imgLocation, imgNav, close_anim;
-    LinearLayout imgCash_btn, txtFareEstimate;
+    LinearLayout imgCash_btn, txtFareEstimate ,prestige_car, economy_car;
     RelativeLayout promo_btn;
     private Button btnBooknRide;
     private PopupWindow popupWindow;
@@ -398,7 +398,15 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-
+        cal_btn = rootView.findViewById(R.id.cal_btn);
+        cal_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Toast.makeText(getContext(), "This feature is coming soon", Toast.LENGTH_LONG).show();
+            }
+        });
+        economy_car = rootView.findViewById(R.id.economy_car);
+        prestige_car = rootView.findViewById(R.id.prestige_car);
         txtFareEstimate = rootView.findViewById(R.id.txtFareEstimate);
         txtSource = rootView.findViewById(R.id.txtSource);
         txtSource.setMovementMethod(new ScrollingMovementMethod());
@@ -416,7 +424,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
         txtSwitcherMessage = rootView.findViewById(R.id.txtSwitcherMessage);
         txtSwitcherMessage.setFactory(new ViewSwitcher.ViewFactory() {
-
             public View makeView() {
                 // TODO Auto-generated method stub
                 // create a TextView
@@ -426,6 +433,20 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
                 t.setTextColor(Color.WHITE);
                 t.setTextSize(15);
                 return t;
+            }
+        });
+        prestige_car.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subCarTypeId = "1"; //set prestige
+                Toast.makeText(getContext(), getResources().getString(R.string.selected_prestige), Toast.LENGTH_SHORT).show();
+            }
+        });
+        economy_car.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subCarTypeId = "2";//set economy
+                Toast.makeText(getContext(), getResources().getString(R.string.selected_economy), Toast.LENGTH_SHORT).show();
             }
         });
 

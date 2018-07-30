@@ -316,6 +316,7 @@ public class UserProfileFragment extends Fragment {
                     Picasso.get().load(imgUrl).placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(imgProfile);
                     PrefsUtil.with(getActivity()).write("firstName", profileItem.getFirstName());
                     PrefsUtil.with(getActivity()).write("lastName", profileItem.getLastName());
+                    PrefsUtil.with(getActivity()).write("mobileNo", profileItem.getMobileNo());
                     PrefsUtil.with(getActivity()).write("profileImage", WebServiceUrl.profileUrl + profileItem.getUId() + "/" + profileItem.getProfileImage());
 
                     try {

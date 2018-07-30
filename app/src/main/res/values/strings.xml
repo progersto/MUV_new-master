@@ -190,4 +190,9 @@
     <string name="rave_payment_currency">NGN</string>
 
 
+    <string name="registration_is_successful">Registration is successful. Sing in using your data</string>
+    <string name="selected_prestige">Selected prestige car</string>
+    <string name="selected_economy">Selected economy car</string>
+
+
 </resources>

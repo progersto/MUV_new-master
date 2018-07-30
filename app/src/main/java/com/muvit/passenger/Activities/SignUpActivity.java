@@ -14,6 +14,7 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -251,7 +252,7 @@ public class SignUpActivity extends AppCompatActivity {
         ArrayList<String> values = new ArrayList<>();
         values.add(edtFirstName.getText().toString());
         values.add(edtLastName.getText().toString());
-        values.add(edtEmail.getText().toString());
+        values.add(edtEmail.getText().toString().toLowerCase());
         values.add(edtMobileNo.getText().toString());
         values.add(String.valueOf(arrCountries.get(spinnerCountryCode.getSelectedItemPosition()).getId()));
         values.add(edtPassword.getText().toString());
@@ -264,6 +265,10 @@ public class SignUpActivity extends AppCompatActivity {
                     //Toast.makeText(context, resultObj.getMessage(), Toast.LENGTH_SHORT).show();
                     if (resultObj.isStatus()) {
                         finish();
+                        Toast toast = Toast.makeText(context,
+                                getResources().getString(R.string.registration_is_successful), Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
                     }
                 } else {
                     Toast.makeText(context, (String) obj, Toast.LENGTH_SHORT).show();

@@ -313,6 +313,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/economy_car"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -320,23 +321,18 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/city_car"
                             android:layout_width="70dp"
                             android:layout_height="40dp"
                             android:layout_alignParentRight="true"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/city_car"
-
-                            />
+                            android:src="@drawable/city_car" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@+id/city_car"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="5dp"
-
                             android:text="Economy"
                             android:textColor="@color/yellow_light" />
 
@@ -353,7 +349,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-
+                        android:id= "@+id/prestige_car"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -361,8 +357,6 @@
                         android:orientation="vertical">
 
                         <ImageView
-
-                            android:id="@+id/sedan_car"
                             android:layout_width="70dp"
                             android:layout_height="40dp"
                             android:layout_alignParentLeft="true"
@@ -373,14 +367,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
-                            android:layout_below="@+id/sedan_car"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="5dp"
                             android:text="Prestige"
                             android:textColor="@color/yellow_light" />
 
                     </LinearLayout>
-
 
                 </RelativeLayout>
 

@@ -442,6 +442,9 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                 .load(PrefsUtil.with(this).readString("profileImage"));
         TextView txtUserName = (TextView) header.findViewById(R.id.txtUserName);
         txtUserName.setText(PrefsUtil.with(this).readString("firstName") + " " + PrefsUtil.with(this).readString("lastName"));
+        TextView txtUserPhone = (TextView) header.findViewById(R.id.txtUserPhone);
+        txtUserPhone.setText(PrefsUtil.with(this).readString("mobileNo"));
+
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 
             @Override
@@ -514,7 +517,9 @@ public class Step2Activity extends AppCompatActivity implements GoogleApiClient.
                     })
                     .load(PrefsUtil.with(Step2Activity.this).readString("profileImage"));
             TextView txtUserName = (TextView) header.findViewById(R.id.txtUserName);
+            TextView txtUserPhone = (TextView) header.findViewById(R.id.txtUserPhone);
             txtUserName.setText(PrefsUtil.with(this).readString("firstName") + " " + PrefsUtil.with(this).readString("lastName"));
+            txtUserPhone.setText(PrefsUtil.with(this).readString("mobileNo"));
         } catch (Exception e) {
             e.printStackTrace();
         }

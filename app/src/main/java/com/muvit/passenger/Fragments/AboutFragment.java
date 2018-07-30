@@ -46,9 +46,9 @@ public class AboutFragment extends Fragment {
 
     private void intiView(View rootView) {
 //        infoWebView = (WebView) rootView.findViewById(R.id.infoWebView);
-        info_tab = rootView.findViewById(R.id.info_tab);
-        policy_tab= rootView.findViewById(R.id.policy_tab);
-        terms_tab=rootView.findViewById(R.id.terms_tab);
+//        info_tab = rootView.findViewById(R.id.info_tab);
+//        policy_tab= rootView.findViewById(R.id.policy_tab);
+//        terms_tab=rootView.findViewById(R.id.terms_tab);
         contact_us_tab=rootView.findViewById(R.id.contact_us_tab);
         back_btn = rootView.findViewById(R.id.back_btn);
 
@@ -60,25 +60,25 @@ public class AboutFragment extends Fragment {
             }
         });
 
-        info_tab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    startActivity(new Intent(getActivity(), InformationActivity.class));
-            }
-        });
-
-        policy_tab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), InformationActivity.class));
-            }
-        });
-        terms_tab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), InformationActivity.class));
-            }
-        });
+//        info_tab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                    startActivity(new Intent(getActivity(), InformationActivity.class));
+//            }
+//        });
+//
+//        policy_tab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                startActivity(new Intent(getActivity(), InformationActivity.class));
+//            }
+//        });
+//        terms_tab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                startActivity(new Intent(getActivity(), InformationActivity.class));
+//            }
+//        });
         contact_us_tab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

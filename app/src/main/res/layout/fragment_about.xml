@@ -51,102 +51,102 @@
         android:paddingRight="16dp"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/info_tab"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@drawable/bottom_border_yellow"
-            android:paddingRight="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            
-            android:orientation="horizontal">
-            <ImageView
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_info"
-                android:layout_margin="10dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+        <!--<LinearLayout-->
+            <!--android:id="@+id/info_tab"-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:background="@drawable/bottom_border_yellow"-->
+            <!--android:paddingRight="10dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!---->
+            <!--android:orientation="horizontal">-->
+            <!--<ImageView-->
+                <!--android:clickable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:src="@drawable/ic_info"-->
+                <!--android:layout_margin="10dp"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp" />-->
 
-            <TextView
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_gravity="center_vertical"
+            <!--<TextView-->
+                <!--android:clickable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:layout_gravity="center_vertical"-->
 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Information"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Information"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="20sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="10dp"
-            android:id="@+id/policy_tab"
-            android:background="@drawable/bottom_border_yellow"
-            android:paddingRight="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            
-            android:orientation="horizontal">
-            <ImageView
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_policy"
-                android:layout_margin="10dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+        <!--<LinearLayout-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:id="@+id/policy_tab"-->
+            <!--android:background="@drawable/bottom_border_yellow"-->
+            <!--android:paddingRight="10dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!---->
+            <!--android:orientation="horizontal">-->
+            <!--<ImageView-->
+                <!--android:clickable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:src="@drawable/ic_policy"-->
+                <!--android:layout_margin="10dp"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp" />-->
 
-            <TextView
-                android:layout_gravity="center_vertical"
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Privacy Policy"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+            <!--<TextView-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:clickable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Privacy Policy"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="20sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="10dp"
-            android:id="@+id/terms_tab"
-            android:background="@drawable/bottom_border_yellow"
-            android:paddingRight="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            
-            android:orientation="horizontal">
-            <ImageView
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_terms"
-                android:layout_margin="10dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+        <!--<LinearLayout-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:id="@+id/terms_tab"-->
+            <!--android:background="@drawable/bottom_border_yellow"-->
+            <!--android:paddingRight="10dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!---->
+            <!--android:orientation="horizontal">-->
+            <!--<ImageView-->
+                <!--android:clickable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:src="@drawable/ic_terms"-->
+                <!--android:layout_margin="10dp"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp" />-->
 
-            <TextView
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_gravity="center_vertical"
+            <!--<TextView-->
+                <!--android:clickable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:layout_gravity="center_vertical"-->
 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/terms_conditoins"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/terms_conditoins"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="20sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:clickable="true"
