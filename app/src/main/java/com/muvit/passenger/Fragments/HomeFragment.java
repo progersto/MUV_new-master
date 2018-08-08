@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
     private Toolbar toolbar;
     private TextView txtTitle;
     private ImageView imgWallet, dashLine, imgLocation, imgNav, close_anim;
-    LinearLayout imgCash_btn, txtFareEstimate ,prestige_car, economy_car;
+    LinearLayout imgCash_btn, txtFareEstimate ,prestige_car, economy_car, container_bottom;
     RelativeLayout promo_btn;
     private Button btnBooknRide;
     private PopupWindow popupWindow;
@@ -376,6 +376,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     private void initViewsNew(View rootView) {
         setupToolbar(rootView);
+        container_bottom = rootView.findViewById(R.id.container_bottom);
+        container_bottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { }
+        });
         imgWallet = rootView.findViewById(R.id.imgWallet);
         imgCash_btn = rootView.findViewById(R.id.card_btn);
         btnBooknRide = rootView.findViewById(R.id.btnBooknRide);
